@@ -66,7 +66,7 @@ class AllenCahn(Equation):
                                      self._num_time_interval]) * self._sqrt_delta_t
         x_sample = np.zeros([num_sample, self._dim, self._num_time_interval + 1])
         x_sample[:, :, 0] = np.ones([num_sample, self._dim]) * self._x_init
-        for i in xrange(self._num_time_interval):
+        for i in range(self._num_time_interval):
             x_sample[:, :, i + 1] = x_sample[:, :, i] + self._sigma * dw_sample[:, :, i]
         return dw_sample, x_sample
 
@@ -90,7 +90,7 @@ class HJB(Equation):
                                      self._num_time_interval]) * self._sqrt_delta_t
         x_sample = np.zeros([num_sample, self._dim, self._num_time_interval + 1])
         x_sample[:, :, 0] = np.ones([num_sample, self._dim]) * self._x_init
-        for i in xrange(self._num_time_interval):
+        for i in range(self._num_time_interval):
             x_sample[:, :, i + 1] = x_sample[:, :, i] + self._sigma * dw_sample[:, :, i]
         return dw_sample, x_sample
 
@@ -121,7 +121,7 @@ class PricingOption(Equation):
         # 	x_sample[:, :, i + 1] = (1 + self._mu_bar * self._delta_t) * x_sample[:, :, i] + (
         # 		self._sigma * x_sample[:, :, i] * dw_sample[:, :, i])
         factor = np.exp((self._mu_bar-(self._sigma**2)/2)*self._delta_t)
-        for i in xrange(self._num_time_interval):
+        for i in range(self._num_time_interval):
             x_sample[:, :, i + 1] = (factor * np.exp(self._sigma * dw_sample[:, :, i])) * x_sample[:, :, i]
         return dw_sample, x_sample
 
@@ -155,7 +155,7 @@ class PricingDefaultRisk(Equation):
                                      self._num_time_interval]) * self._sqrt_delta_t
         x_sample = np.zeros([num_sample, self._dim, self._num_time_interval + 1])
         x_sample[:, :, 0] = np.ones([num_sample, self._dim]) * self._x_init
-        for i in xrange(self._num_time_interval):
+        for i in range(self._num_time_interval):
             x_sample[:, :, i + 1] = (1 + self._mu_bar * self._delta_t) * x_sample[:, :, i] + (
                 self._sigma * x_sample[:, :, i] * dw_sample[:, :, i])
         return dw_sample, x_sample
@@ -182,7 +182,7 @@ class BurgesType(Equation):
                                      self._num_time_interval]) * self._sqrt_delta_t
         x_sample = np.zeros([num_sample, self._dim, self._num_time_interval + 1])
         x_sample[:, :, 0] = np.ones([num_sample, self._dim]) * self._x_init
-        for i in xrange(self._num_time_interval):
+        for i in range(self._num_time_interval):
             x_sample[:, :, i + 1] = x_sample[:, :, i] + self._sigma * dw_sample[:, :, i]
         return dw_sample, x_sample
 
@@ -207,7 +207,7 @@ class QuadraticGradients(Equation):
                                      self._num_time_interval]) * self._sqrt_delta_t
         x_sample = np.zeros([num_sample, self._dim, self._num_time_interval + 1])
         x_sample[:, :, 0] = np.ones([num_sample, self._dim]) * self._x_init
-        for i in xrange(self._num_time_interval):
+        for i in range(self._num_time_interval):
             x_sample[:, :, i + 1] = x_sample[:, :, i] + dw_sample[:, :, i]
         return dw_sample, x_sample
 
@@ -248,7 +248,7 @@ class ReactionDiffusion(Equation):
                                      self._num_time_interval]) * self._sqrt_delta_t
         x_sample = np.zeros([num_sample, self._dim, self._num_time_interval + 1])
         x_sample[:, :, 0] = np.ones([num_sample, self._dim]) * self._x_init
-        for i in xrange(self._num_time_interval):
+        for i in range(self._num_time_interval):
             x_sample[:, :, i + 1] = x_sample[:, :, i] + dw_sample[:, :, i]
         return dw_sample, x_sample
 

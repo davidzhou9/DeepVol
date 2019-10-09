@@ -17,7 +17,7 @@ tf.app.flags.DEFINE_string('problem_name', 'HJB',
                            """The name of partial differential equation.""")
 tf.app.flags.DEFINE_integer('num_run', 1,
                             """The number of experiments to repeatedly run for the same problem.""")
-tf.app.flags.DEFINE_string('log_dir', './logs',
+tf.app.flags.DEFINE_string('log_dir1', './logs',
                            """Directory where to write event logs and output array.""")
 
 
@@ -26,9 +26,9 @@ def main():
     config = get_config(problem_name)
     bsde = get_equation(problem_name, config.dim, config.total_time, config.num_time_interval)
 
-    if not os.path.exists(FLAGS.log_dir):
-        os.mkdir(FLAGS.log_dir)
-    path_prefix = os.path.join(FLAGS.log_dir, problem_name)
+    if not os.path.exists(FLAGS.log_dir1):
+        os.mkdir(FLAGS.log_dir1)
+    path_prefix = os.path.join(FLAGS.log_dir1, problem_name)
     with open('{}_config.json'.format(path_prefix), 'w') as outfile:
         json.dump(dict((name, getattr(config, name))
                        for name in dir(config) if not name.startswith('__')),
