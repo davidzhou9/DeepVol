@@ -22,7 +22,7 @@ tf.app.flags.DEFINE_string('log_dir1', './logs',
 
 
 def main():
-    problem_name = FLAGS.problem_name
+    problem_name = FLAGS.problem_name # get probelm name
     config = get_config(problem_name)
     bsde = get_equation(problem_name, config.dim, config.total_time, config.num_time_interval)
 

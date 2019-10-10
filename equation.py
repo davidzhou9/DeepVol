@@ -122,7 +122,7 @@ class PricingOption(Equation):
         # 		self._sigma * x_sample[:, :, i] * dw_sample[:, :, i])
         factor = np.exp((self._mu_bar-(self._sigma**2)/2)*self._delta_t)
         for i in range(self._num_time_interval):
-            x_sample[:, :, i + 1] = (factor * np.exp(self._sigma * dw_sample[:, :, i])) * x_sample[:, :, i]
+            x_sample[:, :, i + 1] = (factor * np.exp(self._sigma * dw_sample[:, :, i])) * x_sample[:, :, i] # third index is time step
         return dw_sample, x_sample
 
     def f_tf(self, t, x, y, z):
@@ -133,6 +133,66 @@ class PricingOption(Equation):
     def g_tf(self, t, x):
         temp = tf.reduce_max(x, 1, keep_dims=True)
         return tf.maximum(temp - 120, 0) - 2 * tf.maximum(temp - 150, 0)
+    
+class PricingOptionNormal(Equation):
+    def __init__(self, dim, total_time, num_time_interval):
+        super(PricingOptionNormal, self).__init__(dim, total_time, num_time_interval)
+        self._x_init = np.ones(self._dim) * 100;
+        self._sigma = 0.2
+        self._mu_bar = 0.04
+        self._r = 0.04
+        self._alpha = 1.0 / self._dim
+    """    
+    def sample(self, num_sample):
+        dw_sample = normal.rvs(size=[num_sample,
+                                     self._dim,
+                                     self._num_time_interval]) * self._sqrt_delta_t
+        x_sample = np.zeros([num_sample, self._dim, self._num_time_interval + 1])
+        x_sample[:, :, 0] = np.ones([num_sample, self._dim]) * self._x_init
+        
+        print("x_sample", x_sample)
+        # for i in xrange(self._n_time):
+        # 	x_sample[:, :, i + 1] = (1 + self._mu_bar * self._delta_t) * x_sample[:, :, i] + (
+        # 		self._sigma * x_sample[:, :, i] * dw_sample[:, :, i])
+        factor = np.exp((self._mu_bar-(self._sigma**2)/2)*self._delta_t)
+        for i in range(self._num_time_interval):
+            x_sample[:, :, i + 1] = (factor * np.exp(self._sigma * dw_sample[:, :, i])) * x_sample[:, :, i] # third index is time step
+        return dw_sample, x_sample
+
+    def f_tf(self, t, x, y, z):
+        return -self._r * y
+
+    def g_tf(self, t, x):
+        temp = tf.reduce_max(x, 1, keep_dims=True)
+        return tf.maximum(temp - 120, 0)
+    """
+    def sample(self, num_sample):
+        dw_sample = normal.rvs(size=[num_sample,
+                                     self._num_time_interval]) * self._sqrt_delta_t
+        x_sample = np.zeros([num_sample, self._num_time_interval + 1])
+        x_sample[:, 0] = np.ones(num_sample) * self._x_init
+        #print("xsample", x_sample)
+        # for i in xrange(self._n_time):
+        # 	x_sample[:, :, i + 1] = (1 + self._mu_bar * self._delta_t) * x_sample[:, :, i] + (
+        # 		self._sigma * x_sample[:, :, i] * dw_sample[:, :, i])
+        factor = np.exp((self._mu_bar-(self._sigma**2)/2)*self._delta_t)
+        for i in range(self._num_time_interval):
+            x_sample[:, i + 1] = (factor * np.exp(self._sigma * dw_sample[:, i])) * x_sample[:, i]
+            
+        #print("dw_sample", dw_sample)
+        #print("x_sample", x_sample)
+        #print("dim of dw", len(dw_sample))
+        #print("dim of x_sample", len(x_sample))
+        
+        return np.reshape(dw_sample, (len(dw_sample), 1, self.num_time_interval)), np.reshape(x_sample, (len(x_sample), 1, self.num_time_interval + 1))
+
+    def f_tf(self, t, x, y, z):
+        #temp = tf.reduce_sum(z, 1, keep_dims=True) / self._sigma
+        return -self._r * y
+
+    def g_tf(self, t, x):
+        temp = tf.reduce_max(x, 1, keep_dims=True)
+        return tf.maximum(temp - 120, 0)
 
 
 class PricingDefaultRisk(Equation):
