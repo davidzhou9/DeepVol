@@ -1,5 +1,6 @@
 # [Deep BSDE Solver](https://arxiv.org/abs/1707.02568) in TensorFlow
 
+David Zhou Senior Thesis
 
 ## Training
 
