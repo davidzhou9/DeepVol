@@ -26,9 +26,10 @@ def main():
     config = get_config(problem_name)
     bsde = get_equation(problem_name, config.dim, config.total_time, config.num_time_interval)
 
-    if not os.path.exists(FLAGS.log_dir1):
+    if not os.path.exists(FLAGS.log_dir1): # check to see if this log directory already exists
         os.mkdir(FLAGS.log_dir1)
-    path_prefix = os.path.join(FLAGS.log_dir1, problem_name)
+    path_prefix = os.path.join(FLAGS.log_dir1, problem_name) # create the name of the path file
+    
     with open('{}_config.json'.format(path_prefix), 'w') as outfile:
         json.dump(dict((name, getattr(config, name))
                        for name in dir(config) if not name.startswith('__')),
@@ -36,15 +37,24 @@ def main():
     logging.basicConfig(level=logging.INFO,
                         format='%(levelname)-6s %(message)s')
 
+
+    ## Order of calls
+    # 1) Repeat the experiment the number of times you indicate
+    # 2) Create the feed forward network
+    # 3) Build the Model
+    # 4) Train the model
+
     for idx_run in range(1, FLAGS.num_run+1):
         tf.reset_default_graph()
         with tf.Session() as sess:
             logging.info('Begin to solve %s with run %d' % (problem_name, idx_run))
-            model = FeedForwardModel(config, bsde, sess)
+            
+            ###### IMPORTANT ######
+            model = FeedForwardModel(config, bsde, sess) # create the feed forward model
             if bsde.y_init:
                 logging.info('Y0_true: %.4e' % bsde.y_init)
-            model.build()
-            training_history = model.train()
+            model.build() # bulid the model
+            training_history = model.train() # trin the model
             if bsde.y_init:
                 logging.info('relative error of Y0: %s',
                              '{:.2%}'.format(

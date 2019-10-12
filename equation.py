@@ -134,6 +134,8 @@ class PricingOption(Equation):
         temp = tf.reduce_max(x, 1, keep_dims=True)
         return tf.maximum(temp - 120, 0) - 2 * tf.maximum(temp - 150, 0)
     
+    
+# vectors in form of number of samples, dimensionality, and then time intervals
 class PricingOptionNormal(Equation):
     def __init__(self, dim, total_time, num_time_interval):
         super(PricingOptionNormal, self).__init__(dim, total_time, num_time_interval)

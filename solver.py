@@ -28,7 +28,10 @@ class FeedForwardModel(object):
         # to save iteration results
         training_history = []
         # for validation
-        dw_valid, x_valid = self._bsde.sample(self._config.valid_size)
+        
+        dw_valid, x_valid = self._bsde.sample(self._config.valid_size) # sample from your bsde problem
+        
+        
         # can still use batch norm of samples in the validation phase
         feed_dict_valid = {self._dw: dw_valid, self._x: x_valid, self._is_training: False}
         # initialization
@@ -46,30 +49,49 @@ class FeedForwardModel(object):
             self._sess.run(self._train_ops, feed_dict={self._dw: dw_train,
                                                        self._x: x_train,
                                                        self._is_training: True})
+    
+        #print(tf.)
         return np.array(training_history)
 
+
+    # build function
+    # Notes: Called first in the main.
+    
     def build(self):
         start_time = time.time()
         time_stamp = np.arange(0, self._bsde.num_time_interval) * self._bsde.delta_t
-        self._dw = tf.placeholder(TF_DTYPE, [None, self._dim, self._num_time_interval], name='dW')
+        
+        # placeholders are variables that we will assign data to at a later date
+        # will need to feed actual values into these variables at runtime (done in the train function)
+        self._dw = tf.placeholder(TF_DTYPE, [None, self._dim, self._num_time_interval], name='dW') # TF_DTYPE is tf.float64
         self._x = tf.placeholder(TF_DTYPE, [None, self._dim, self._num_time_interval + 1], name='X')
         self._is_training = tf.placeholder(tf.bool)
+        
+        # initial guess for correct option value (or whatever)
         self._y_init = tf.Variable(tf.random_uniform([1],
                                                      minval=self._config.y_init_range[0],
                                                      maxval=self._config.y_init_range[1],
-                                                     dtype=TF_DTYPE))
+                                                     dtype=TF_DTYPE)) # y init is picked from a certain range specified in the config file
+        
+        # guess for the sigma grad term
         z_init = tf.Variable(tf.random_uniform([1, self._dim],
                                                minval=-.1, maxval=.1,
                                                dtype=TF_DTYPE))
+        
+        # tf.ones creates a tensor of all ones (who knew?), tf.shape returns the shape of a tensor (i.e. dimensions in form of tensor)
+        # here tf.shape is get dimensioality of the number of samples and appending an extra one
         all_one_vec = tf.ones(shape=tf.stack([tf.shape(self._dw)[0], 1]), dtype=TF_DTYPE)
+        print("all_one_vec: ", all_one_vec)
         y = all_one_vec * self._y_init
         z = tf.matmul(all_one_vec, z_init)
         with tf.variable_scope('forward'):
+            
+            # iterate through time (cooL)
             for t in range(0, self._num_time_interval-1):
                 y = y - self._bsde.delta_t * (
-                    self._bsde.f_tf(time_stamp[t], self._x[:, :, t], y, z)
+                    self._bsde.f_tf(time_stamp[t], self._x[:, :, t], y, z) # call f function (e.g. rP)
                 ) + tf.reduce_sum(z * self._dw[:, :, t], 1, keep_dims=True)
-                z = self._subnetwork(self._x[:, :, t + 1], str(t + 1)) / self._dim
+                z = self._subnetwork(self._x[:, :, t + 1], str(t + 1)) / self._dim # ALERT: WHY DIVIDE?
             # terminal time
             y = y - self._bsde.delta_t * self._bsde.f_tf(
                 time_stamp[-1], self._x[:, :, -2], y, z
