@@ -195,6 +195,57 @@ class PricingOptionNormal(Equation):
     def g_tf(self, t, x):
         temp = tf.reduce_max(x, 1, keep_dims=True)
         return tf.maximum(temp - 120, 0)
+    
+# vectors in form of number of samples, dimensionality, and then time intervals
+class PricingOptionOneFactor(Equation):
+    def __init__(self, dim, total_time, num_time_interval):
+        super(PricingOptionOneFactor, self).__init__(dim, total_time, num_time_interval)
+        self._num_assets = 1
+        self._x_init = np.ones(self._num_assets) * 100
+        self._r = 0.04
+        
+        self._y_init = np.ones(1) * 0.0989
+        self._rho = -0.2949
+        self._reversion_Rate = 0.7331
+        self._mean_Rate = 0.3407
+        self._vol_Of_Vol = 0.7068
+        
+        self._alpha = 1.0 / self._dim
+
+    def sample(self, num_sample):
+        dw_sample = normal.rvs([0, 0], [[self.delta_t, self._rho * self.delta_t], [self._rho * self.delta_t, self.delta_t]], size=[num_sample,
+                                     self._num_time_interval])
+        x_sample = np.zeros([num_sample, self._num_time_interval + 1])
+        x_sample[:, 0] = np.ones(num_sample) * self._x_init
+        
+        y_sample = np.zeros([num_sample, self._num_time_interval + 1])
+        y_sample[:, 0] = np.ones(num_sample) * self._y_init
+        
+        # for i in xrange(self._n_time):
+        # 	x_sample[:, :, i + 1] = (1 + self._mu_bar * self._delta_t) * x_sample[:, :, i] + (
+        # 		self._sigma * x_sample[:, :, i] * dw_sample[:, :, i])
+        #factor = np.exp((self._mu_bar-(self._sigma**2)/2)*self._delta_t)
+        for i in range(self._num_time_interval):
+            y_sample[:, i + 1] = y_sample[:, i] + np.ones(num_sample) * self._reversion_Rate * self._mean_Rate * self.delta_t - self._reversion_Rate * np.maximum(y_sample[:, i], np.zeros(num_sample)) * self.delta_t + self._vol_Of_Vol * np.multiply(np.sqrt(np.maximum(y_sample[:, i], np.zeros(num_sample))), dw_sample[:, i, 1]) 
+            x_sample[:, i + 1] = x_sample[:, i] * np.exp((np.ones(num_sample) * self._r - (np.power(np.maximum(y_sample[:, i + 1], np.zeros(num_sample)), 2)) / 2) * self.delta_t) * np.exp(np.multiply(np.sqrt(np.maximum(y_sample[:, i + 1], np.zeros(num_sample))), dw_sample[:, i, 0]))
+   
+        new_DW = np.zeros(shape = (0, self._dim, self._num_time_interval))
+        for i in range(num_sample):
+            currSample = dw_sample[i]
+            currOne = currSample[:, 0] # gets the one used for W^(0) in stock price BM
+            currTwo = currSample[:, 1] # gets the one used for W^(1) in vol process BM
+            tempArray = np.ndarray(shape = (2, self._num_time_interval), buffer = np.append(currOne, currTwo))
+            new_DW = np.append(new_DW, np.array([tempArray]), axis = 0)
+            
+
+        return new_DW, x_sample
+
+    def f_tf(self, t, x, y, z):
+        return -self._r * y
+
+    def g_tf(self, t, x):
+        temp = tf.reduce_max(x, 1, keep_dims=True)
+        return tf.maximum(temp - 120, 0)
 
 
 class PricingDefaultRisk(Equation):

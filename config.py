@@ -51,10 +51,20 @@ class PricingOptionNormalConfig(Config):
     num_time_interval = 20
     lr_values = list(np.array([5e-3, 5e-3]))
     lr_boundaries = [2000]
+    num_iterations = 60000
+    num_hiddens = [dim, dim+10, dim+10, dim]
+    y_init_range = [10, 12]
+    
+
+class PricingOptionOneFactorConfig(Config):
+    dim = 2
+    total_time = 0.5
+    num_time_interval = 20
+    lr_values = list(np.array([5e-3, 5e-3]))
+    lr_boundaries = [2000]
     num_iterations = 4000
     num_hiddens = [dim, dim+10, dim+10, dim]
-    y_init_range = [0.1, 2]
-
+    y_init_range = [5 , 20]
 
 class PricingDefaultRiskConfig(Config):
     dim = 100

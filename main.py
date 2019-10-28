@@ -66,6 +66,7 @@ def main():
                        delimiter=",",
                        header="step,loss_function,target_value,elapsed_time",
                        comments='')
+            
 
 if __name__ == '__main__':
     main()
