@@ -295,8 +295,8 @@ class PricingOptionMultiFactor(Equation):
         self._rho_12 = 0.0
         
         # reversion rate parameters
-        self._alpha = 20
-        self._delta = 0.1
+        self._alpha_revert = 5
+        self._delta = 1
         
         self._mf = -0.8
         self._ms = -0.8
@@ -326,7 +326,7 @@ class PricingOptionMultiFactor(Equation):
             x_sample[:, i + 1] = x_sample[:, i] * np.exp((self._r - 0.5 * np.power(vol_factor, 2)) * self._delta_t + np.multiply(vol_factor, dw_sample[:, i, 0]))
             #x_sample[:, i + 1] = x_sample[:, i] + (self._r - 0.5 * (np.maximum(y_sample[:, i], np.zeros(num_sample))))*self._delta_t + np.multiply(np.sqrt(np.maximum(y_sample[:, i], np.zeros(num_sample))), dw_sample[:, i, 0])
             
-            y_sample[:, i + 1] = y_sample[:, i] + self._alpha * self._delta_t * (self._mf - y_sample[:, i]) + self._vov_f * math.sqrt(2 * self._alpha) * dw_sample[:, i, 1] 
+            y_sample[:, i + 1] = y_sample[:, i] + self._alpha_revert * self._delta_t * (self._mf - y_sample[:, i]) + self._vov_f * math.sqrt(2 * self._alpha_revert) * dw_sample[:, i, 1] 
             z_sample[:, i + 1] = z_sample[:, i] + self._delta * self._delta_t * (self._ms - z_sample[:, i]) + self._vov_s * math.sqrt(2 * self._delta) * dw_sample[:, i, 2] 
             #np.ones(num_sample) * self._reversion_Rate * self._mean_Rate * self._delta_t - self._reversion_Rate * np.maximum(y_sample[:, i], np.zeros(num_sample)) * self._delta_t + self._vol_Of_Vol * np.multiply(np.sqrt(np.maximum(y_sample[:, i], np.zeros(num_sample))), dw_sample[:, i, 1]) 
             

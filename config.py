@@ -62,7 +62,7 @@ class PricingOptionOneFactorConfig(Config):
     num_time_interval = 20 # original was 20
     lr_values = list(np.array([5e-3, 5e-3]))
     lr_boundaries = [2000]
-    num_iterations = 3000 # original was 5000
+    num_iterations = 2000 # original was 5000
     num_hiddens = [dim, dim+10, dim+10, dim]
     y_init_range = [10, 15]
     
@@ -72,7 +72,7 @@ class PricingOptionMultiFactorConfig(Config):
     num_time_interval = 20
     lr_values = list(np.array([5e-3, 5e-3]))
     lr_boundaries = [2000]
-    num_iterations = 3000
+    num_iterations = 2000
     num_hiddens = [dim, dim+10, dim+10, dim]
     y_init_range = [8, 14]
 
