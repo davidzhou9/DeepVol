@@ -1,8 +1,10 @@
+from __future__ import print_function
+from tensorflow.python.training import moving_averages
 import logging
 import time
 import numpy as np
 import tensorflow as tf
-from tensorflow.python.training import moving_averages
+from scipy.stats import multivariate_normal as normal
 
 TF_DTYPE = tf.float64
 MOMENTUM = 0.99
@@ -34,10 +36,34 @@ class FeedForwardModel(object):
         
         # can still use batch norm of samples in the validation phase
         feed_dict_valid = {self._dw: dw_valid, self._x: x_valid, self._is_training: False}
+        
+        #feed_dict_valid = {self._x: x_valid, self._is_training: False}
+        #self._sess.run(tf.global_variables_initializer())
+        # begin sgd iteration
+        #for step in range(self._config.num_iterations+1):
+        #    if step % self._config.logging_frequency == 0:
+        #        loss, init = self._sess.run([self._loss, self._y_init], feed_dict=feed_dict_valid)
+        #        elapsed_time = time.time()-start_time+self._t_build
+        #        training_history.append([step, loss, init, elapsed_time])
+        #        if self._config.verbose:
+        #            logging.info("step: %5u,    loss: %.4e,   Y0: %.4e,  elapsed time %3u" % (
+        #                step, loss, init, elapsed_time))
+        #    x_train = self._bsde.sample(self._config.batch_size)
+        #    self._sess.run(self._train_ops, feed_dict={self._x: x_train,
+        #                                               self._is_training: True})
+    
+        #print(tf.)
+        #return np.array(training_history)
         # initialization
+        
+        print("num_iterations: ", self._config.num_iterations)
+        print("total time intervals: ", self._config.num_time_interval)
+        print("# of dimensions: ", self._config.dim)
         self._sess.run(tf.global_variables_initializer())
         # begin sgd iteration
-        for step in range(self._config.num_iterations+1):
+        for step in range(self._config.num_iterations + 1):
+           #s print("Iteration step: ", step)
+            # logs once every (currently 100) logging freq steps
             if step % self._config.logging_frequency == 0:
                 loss, init = self._sess.run([self._loss, self._y_init], feed_dict=feed_dict_valid)
                 elapsed_time = time.time()-start_time+self._t_build
@@ -46,6 +72,10 @@ class FeedForwardModel(object):
                     logging.info("step: %5u,    loss: %.4e,   Y0: %.4e,  elapsed time %3u" % (
                         step, loss, init, elapsed_time))
             dw_train, x_train = self._bsde.sample(self._config.batch_size)
+            #print("spot and vol factor: ", x_train) # use print to output to console
+            #print("dw_train: ", dw_train)
+            #print("d_W: ", dw_train)
+            #logging.info(tf.strings.as_string(x_train))
             self._sess.run(self._train_ops, feed_dict={self._dw: dw_train,
                                                        self._x: x_train,
                                                        self._is_training: True})
@@ -82,6 +112,47 @@ class FeedForwardModel(object):
         # here tf.shape is get dimensioality of the number of samples and appending an extra one
         all_one_vec = tf.ones(shape=tf.stack([tf.shape(self._dw)[0], 1]), dtype=TF_DTYPE)
         print("all_one_vec: ", all_one_vec)
+        
+        
+        
+        #################################### TESTING WITH THE FINAL CONDITION #########################################
+        
+        """
+        num_Sample = 5
+        temp_Sample = normal.rvs([100, 100], [[0.5, -0.7], [-0.7, 0.2]], size=[num_Sample, self._num_time_interval])
+        print("temp_Sample: ", temp_Sample)
+        
+        
+        new_Process = np.zeros(shape = (0, self._dim, self._num_time_interval))
+
+        #print("dw_sample: ", dw_sample)
+
+        print("New Process before mods: ", new_Process)
+        for i in range(num_Sample):
+            
+            #for j in range(self._num_time_interval):
+                currXSample = temp_Sample[i, :, 0]
+                currYSample = temp_Sample[i, :, 1]
+                print("currXSample: ", currXSample)
+                print("currYSample: ", currYSample)
+
+                tempArrayOther = np.ndarray(shape = (self._dim, self._num_time_interval), buffer = np.append(currXSample, currYSample))
+                print("tempArrayOther: ", tempArrayOther)
+    
+                new_Process = np.append(new_Process, np.array([tempArrayOther]), axis = 0)
+    
+        print("new_Process: ", new_Process)
+        tempTensor = tf.convert_to_tensor(new_Process)
+        print("DAVID LOOK: ", self._bsde.g_tf(self._total_time, tempTensor[:, :, -1]).eval())
+        
+        
+        
+        print("TEMP 1: ", tempTensor[:, :, -1].eval())
+        print("REDUCING: ", tf.reduce_max(tempTensor[:, :, -1], 1, keep_dims=True).eval())
+        """
+        
+        ############################################################################################
+        
         y = all_one_vec * self._y_init
         z = tf.matmul(all_one_vec, z_init)
         with tf.variable_scope('forward'):

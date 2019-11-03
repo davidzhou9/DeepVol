@@ -11,6 +11,8 @@ import tensorflow as tf
 from config import get_config
 from equation import get_equation
 from solver import FeedForwardModel
+import warnings
+warnings.simplefilter("ignore")
 
 FLAGS = tf.app.flags.FLAGS
 tf.app.flags.DEFINE_string('problem_name', 'HJB',
@@ -44,7 +46,7 @@ def main():
     # 3) Build the Model
     # 4) Train the model
 
-    for idx_run in range(1, FLAGS.num_run+1):
+    for idx_run in range(1, FLAGS.num_run + 1):
         tf.reset_default_graph()
         with tf.Session() as sess:
             logging.info('Begin to solve %s with run %d' % (problem_name, idx_run))
@@ -55,10 +57,10 @@ def main():
                 logging.info('Y0_true: %.4e' % bsde.y_init)
             model.build() # bulid the model
             training_history = model.train() # trin the model
-            if bsde.y_init:
-                logging.info('relative error of Y0: %s',
-                             '{:.2%}'.format(
-                                 abs(bsde.y_init - training_history[-1, 2])/bsde.y_init))
+            #if bsde.y_init:
+            #    logging.info('relative error of Y0: %s',
+            #                 '{:.2%}'.format(
+            #                     abs(bsde.y_init - training_history[-1, 2])/bsde.y_init))
             # save training history
             np.savetxt('{}_training_history_{}.csv'.format(path_prefix, idx_run),
                        training_history,

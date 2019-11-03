@@ -1,7 +1,7 @@
 import numpy as np
 import tensorflow as tf
 from scipy.stats import multivariate_normal as normal
-
+import math
 
 class Equation(object):
     """Base class for defining PDE related function."""
@@ -140,7 +140,7 @@ class PricingOptionNormal(Equation):
     def __init__(self, dim, total_time, num_time_interval):
         super(PricingOptionNormal, self).__init__(dim, total_time, num_time_interval)
         self._x_init = np.ones(self._dim) * 100;
-        self._sigma = 0.2
+        self._sigma = 0.3
         self._mu_bar = 0.04
         self._r = 0.04
         self._alpha = 1.0 / self._dim
@@ -193,10 +193,12 @@ class PricingOptionNormal(Equation):
         return -self._r * y
 
     def g_tf(self, t, x):
-        temp = tf.reduce_max(x, 1, keep_dims=True)
-        return tf.maximum(temp - 120, 0)
+        temp = x[:, 0]
+        return tf.maximum(temp - 95, 0)
     
 # vectors in form of number of samples, dimensionality, and then time intervals
+        
+# Stochastic volatility model with one factor (HESTON)
 class PricingOptionOneFactor(Equation):
     def __init__(self, dim, total_time, num_time_interval):
         super(PricingOptionOneFactor, self).__init__(dim, total_time, num_time_interval)
@@ -204,48 +206,163 @@ class PricingOptionOneFactor(Equation):
         self._x_init = np.ones(self._num_assets) * 100
         self._r = 0.04
         
-        self._y_init = np.ones(1) * 0.0989
-        self._rho = -0.2949
-        self._reversion_Rate = 0.7331
-        self._mean_Rate = 0.3407
-        self._vol_Of_Vol = 0.7068
+        self._y_init = np.ones(1) * 0.09
+        self._rho = -0.3
+        self._reversion_Rate = 0.7
+        self._mean_Rate = 0.09
+        self._vol_Of_Vol = 0.2
         
         self._alpha = 1.0 / self._dim
 
     def sample(self, num_sample):
-        dw_sample = normal.rvs([0, 0], [[self.delta_t, self._rho * self.delta_t], [self._rho * self.delta_t, self.delta_t]], size=[num_sample,
+        dw_sample = normal.rvs([0, 0], [[self._delta_t, self._rho * self._delta_t], [self._rho * self._delta_t, self._delta_t]], size=[num_sample,
                                      self._num_time_interval])
         x_sample = np.zeros([num_sample, self._num_time_interval + 1])
         x_sample[:, 0] = np.ones(num_sample) * self._x_init
         
         y_sample = np.zeros([num_sample, self._num_time_interval + 1])
-        y_sample[:, 0] = np.ones(num_sample) * self._y_init
+        y_sample[:, 0] = np.ones(num_sample) * 0.09
         
         # for i in xrange(self._n_time):
         # 	x_sample[:, :, i + 1] = (1 + self._mu_bar * self._delta_t) * x_sample[:, :, i] + (
         # 		self._sigma * x_sample[:, :, i] * dw_sample[:, :, i])
         #factor = np.exp((self._mu_bar-(self._sigma**2)/2)*self._delta_t)
+        """
+        factor = np.exp((self._mu_bar-(self._sigma**2)/2)*self._delta_t)
         for i in range(self._num_time_interval):
-            y_sample[:, i + 1] = y_sample[:, i] + np.ones(num_sample) * self._reversion_Rate * self._mean_Rate * self.delta_t - self._reversion_Rate * np.maximum(y_sample[:, i], np.zeros(num_sample)) * self.delta_t + self._vol_Of_Vol * np.multiply(np.sqrt(np.maximum(y_sample[:, i], np.zeros(num_sample))), dw_sample[:, i, 1]) 
-            x_sample[:, i + 1] = x_sample[:, i] * np.exp((np.ones(num_sample) * self._r - (np.power(np.maximum(y_sample[:, i + 1], np.zeros(num_sample)), 2)) / 2) * self.delta_t) * np.exp(np.multiply(np.sqrt(np.maximum(y_sample[:, i + 1], np.zeros(num_sample))), dw_sample[:, i, 0]))
-   
+            x_sample[:, :, i + 1] = (factor * np.exp(self._sigma * dw_sample[:, :, i])) * x_sample[:, :, i] # third index is time step
+        return dw_sample, x_sample
+        """
+        for i in range(self._num_time_interval):
+            #x_sample[:, i + 1] = x_sample[:, i] * np.exp((np.ones(num_sample) * self._r - (np.power(np.maximum(y_sample[:, i], np.zeros(num_sample)), 2)) / 2) * self._delta_t) * np.exp(np.multiply(np.sqrt(np.maximum(y_sample[:, i], np.zeros(num_sample))), dw_sample[:, i, 0]))
+            x_sample[:, i + 1] = x_sample[:, i] * np.exp((self._r - 0.5 * (np.maximum(y_sample[:, i], np.zeros(num_sample)))) * self._delta_t + np.multiply(np.sqrt(np.maximum(y_sample[:, i], np.zeros(num_sample))), dw_sample[:, i, 0]))
+            #x_sample[:, i + 1] = x_sample[:, i] + (self._r - 0.5 * (np.maximum(y_sample[:, i], np.zeros(num_sample))))*self._delta_t + np.multiply(np.sqrt(np.maximum(y_sample[:, i], np.zeros(num_sample))), dw_sample[:, i, 0])
+            
+            #x_sample[:, i + 1] = x_sample[:, i] + (np.ones(num_sample) * self._r - (np.maximum(y_sample[:, i], np.zeros(num_sample)) / 2)) * self._delta_t + np.multiply(np.sqrt(np.maximum(y_sample[:, i], np.zeros(num_sample))), dw_sample[:, i, 0])
+            y_sample[:, i + 1] = y_sample[:, i] + self._reversion_Rate * self._delta_t * (self._mean_Rate - np.maximum(y_sample[:, i], np.zeros(num_sample))) + self._vol_Of_Vol * np.multiply(np.sqrt(np.maximum(y_sample[:, i], np.zeros(num_sample))), dw_sample[:, i, 1]) 
+            
+            #np.ones(num_sample) * self._reversion_Rate * self._mean_Rate * self._delta_t - self._reversion_Rate * np.maximum(y_sample[:, i], np.zeros(num_sample)) * self._delta_t + self._vol_Of_Vol * np.multiply(np.sqrt(np.maximum(y_sample[:, i], np.zeros(num_sample))), dw_sample[:, i, 1]) 
+            
         new_DW = np.zeros(shape = (0, self._dim, self._num_time_interval))
+        new_Process = np.zeros(shape = (0, self._dim, self._num_time_interval + 1))
+        
+        # VALIDATED RESTRUCTURING SCHEME
         for i in range(num_sample):
             currSample = dw_sample[i]
-            currOne = currSample[:, 0] # gets the one used for W^(0) in stock price BM
-            currTwo = currSample[:, 1] # gets the one used for W^(1) in vol process BM
-            tempArray = np.ndarray(shape = (2, self._num_time_interval), buffer = np.append(currOne, currTwo))
-            new_DW = np.append(new_DW, np.array([tempArray]), axis = 0)
-            
+            currXSample = x_sample[i]
+            currYSample = y_sample[i]
+    
+            currOne = currSample[:, 0]
+            currTwo = currSample[:, 1]
+            ##print("currSample: ", currSample)
+            #print("currOne: ", currOne)    
 
-        return new_DW, x_sample
+            tempArray = np.ndarray(shape = (self._dim, self._num_time_interval), buffer = np.append(currOne, currTwo))
+            #print("temp Array: ", tempArray)
+            tempArrayOther = np.ndarray(shape = (self._dim, self._num_time_interval + 1), buffer = np.append(currXSample, currYSample))
+    
+            new_DW = np.append(new_DW, np.array([tempArray]), axis = 0)
+            new_Process = np.append(new_Process, np.array([tempArrayOther]), axis = 0)
+            
+        return new_DW, new_Process
+        #return new_DW, np.reshape(x_sample, (len(x_sample), 1, self.num_time_interval + 1))
 
     def f_tf(self, t, x, y, z):
         return -self._r * y
 
     def g_tf(self, t, x):
-        temp = tf.reduce_max(x, 1, keep_dims=True)
-        return tf.maximum(temp - 120, 0)
+        #temp = tf.reduce_max(x, 1, keep_dims=True)
+        #logging.info("X info: ", x)
+        
+        # we are given all the samples of each dimension at the final time, we only want the price sample of each time so just return the max of those calculations        
+        #temp = tf.reduce_max(x, 1, keep_dims=True)
+        temp = x[:, 0]
+        return tf.maximum(temp - 95, 0)
+    
+# Stochastic volatility model with multi (two) factors
+class PricingOptionMultiFactor(Equation):
+    def __init__(self, dim, total_time, num_time_interval):
+        super(PricingOptionMultiFactor, self).__init__(dim, total_time, num_time_interval)
+        self._num_assets = 1
+        self._x_init = np.ones(self._num_assets) * 55
+        self._y_init = np.ones(self._num_assets) * -1
+        self._z_init = np.ones(self._num_assets) * -1
+        self._r = 0.1
+        
+        # correlation parameters
+        self._rho_1 = -0.2
+        self._rho_2 = -0.2
+        self._rho_12 = 0.0
+        
+        # reversion rate parameters
+        self._alpha = 20
+        self._delta = 0.1
+        
+        self._mf = -0.8
+        self._ms = -0.8
+    
+        self._vov_f = 0.5
+        self._vov_s = 0.8
+        
+        self._alpha = 1.0 / self._dim
+
+    def sample(self, num_sample):
+        dw_sample = normal.rvs([0, 0, 0], [[self._delta_t, self._rho_1 * self._delta_t, self._rho_2 * self._delta_t], 
+                                            [self._rho_1 * self._delta_t, self._delta_t, self._rho_12 * self._delta_t],
+                                            [self._rho_2 * self._delta_t, self._rho_12 * self._delta_t, self._delta_t]], size=[num_sample, self._num_time_interval])
+        x_sample = np.zeros([num_sample, self._num_time_interval + 1])
+        x_sample[:, 0] = self._x_init
+        
+        y_sample = np.zeros([num_sample, self._num_time_interval + 1])
+        y_sample[:, 0] = self._y_init
+        
+        z_sample = np.zeros([num_sample, self._num_time_interval + 1])
+        z_sample[:, 0] = self._z_init
+        
+        
+        for i in range(self._num_time_interval):
+            vol_factor = np.exp(y_sample[:, i] + z_sample[:, i])
+            #x_sample[:, i + 1] = x_sample[:, i] * np.exp((np.ones(num_sample) * self._r - (np.power(np.maximum(y_sample[:, i], np.zeros(num_sample)), 2)) / 2) * self._delta_t) * np.exp(np.multiply(np.sqrt(np.maximum(y_sample[:, i], np.zeros(num_sample))), dw_sample[:, i, 0]))
+            x_sample[:, i + 1] = x_sample[:, i] * np.exp((self._r - 0.5 * np.power(vol_factor, 2)) * self._delta_t + np.multiply(vol_factor, dw_sample[:, i, 0]))
+            #x_sample[:, i + 1] = x_sample[:, i] + (self._r - 0.5 * (np.maximum(y_sample[:, i], np.zeros(num_sample))))*self._delta_t + np.multiply(np.sqrt(np.maximum(y_sample[:, i], np.zeros(num_sample))), dw_sample[:, i, 0])
+            
+            y_sample[:, i + 1] = y_sample[:, i] + self._alpha * self._delta_t * (self._mf - y_sample[:, i]) + self._vov_f * math.sqrt(2 * self._alpha) * dw_sample[:, i, 1] 
+            z_sample[:, i + 1] = z_sample[:, i] + self._delta * self._delta_t * (self._ms - z_sample[:, i]) + self._vov_s * math.sqrt(2 * self._delta) * dw_sample[:, i, 2] 
+            #np.ones(num_sample) * self._reversion_Rate * self._mean_Rate * self._delta_t - self._reversion_Rate * np.maximum(y_sample[:, i], np.zeros(num_sample)) * self._delta_t + self._vol_Of_Vol * np.multiply(np.sqrt(np.maximum(y_sample[:, i], np.zeros(num_sample))), dw_sample[:, i, 1]) 
+            
+        new_DW = np.zeros(shape = (0, self._dim, self._num_time_interval))
+        new_Process = np.zeros(shape = (0, self._dim, self._num_time_interval + 1))
+        
+        # VALIDATED RESTRUCTURING SCHEME
+        for i in range(num_sample):
+            currSample = dw_sample[i]
+            currXSample = x_sample[i]
+            currYSample = y_sample[i]
+            currZSample = z_sample[i]
+    
+            currOne = currSample[:, 0]
+            currTwo = currSample[:, 1]
+            currThree = currSample[:, 2]
+            ##print("currSample: ", currSample)
+            #print("currOne: ", currOne)    
+
+            tempArray = np.ndarray(shape = (self._dim, self._num_time_interval), buffer = np.append(np.append(currOne, currTwo), currThree))
+            #print("temp Array: ", tempArray)
+            tempArrayOther = np.ndarray(shape = (self._dim, self._num_time_interval + 1), buffer = np.append(np.append(currXSample, currYSample), currZSample))
+    
+            new_DW = np.append(new_DW, np.array([tempArray]), axis = 0)
+            new_Process = np.append(new_Process, np.array([tempArrayOther]), axis = 0)
+            
+        return new_DW, new_Process
+
+    def f_tf(self, t, x, y, z):
+        return -self._r * y
+
+    def g_tf(self, t, x):
+        #temp = tf.reduce_max(x, 1, keep_dims=True)
+        #logging.info("X info: ", x)
+        temp = x[:, 0]
+        return tf.maximum(temp - 50, 0)
 
 
 class PricingDefaultRisk(Equation):
