@@ -139,11 +139,12 @@ class PricingOption(Equation):
 class PricingOptionNormal(Equation):
     def __init__(self, dim, total_time, num_time_interval):
         super(PricingOptionNormal, self).__init__(dim, total_time, num_time_interval)
-        self._x_init = np.ones(self._dim) * 100;
-        self._sigma = 0.3
-        self._mu_bar = 0.04
-        self._r = 0.04
+        self._x_init = np.ones(self._dim) * 100
+        self._sigma = 0.05
+        self._mu_bar = 0.05
+        self._r = 0.05
         self._alpha = 1.0 / self._dim
+        self._strike = 120
     """    
     def sample(self, num_sample):
         dw_sample = normal.rvs(size=[num_sample,
@@ -177,7 +178,7 @@ class PricingOptionNormal(Equation):
         # for i in xrange(self._n_time):
         # 	x_sample[:, :, i + 1] = (1 + self._mu_bar * self._delta_t) * x_sample[:, :, i] + (
         # 		self._sigma * x_sample[:, :, i] * dw_sample[:, :, i])
-        factor = np.exp((self._mu_bar-(self._sigma**2)/2)*self._delta_t)
+        factor = np.exp((self._r-(self._sigma**2)/2)*self._delta_t)
         for i in range(self._num_time_interval):
             x_sample[:, i + 1] = (factor * np.exp(self._sigma * dw_sample[:, i])) * x_sample[:, i]
             
@@ -194,7 +195,7 @@ class PricingOptionNormal(Equation):
 
     def g_tf(self, t, x):
         temp = x[:, 0]
-        return tf.maximum(temp - 95, 0)
+        return tf.maximum(temp - self._strike, 0)
     
 # vectors in form of number of samples, dimensionality, and then time intervals
         
@@ -204,24 +205,25 @@ class PricingOptionOneFactor(Equation):
         super(PricingOptionOneFactor, self).__init__(dim, total_time, num_time_interval)
         self._num_assets = 1
         self._x_init = np.ones(self._num_assets) * 100
-        self._r = 0.04
+        self._r = 0.05
         
-        self._y_init = np.ones(1) * 0.09
-        self._rho = -0.3
-        self._reversion_Rate = 0.7
-        self._mean_Rate = 0.09
+        self._y_init = np.ones(1) * 0.01
+        self._rho = -0.4
+        self._reversion_Rate = 0.5
+        self._mean_Rate = 0.01
         self._vol_Of_Vol = 0.2
         
         self._alpha = 1.0 / self._dim
+        self._strike = 105
 
     def sample(self, num_sample):
         dw_sample = normal.rvs([0, 0], [[self._delta_t, self._rho * self._delta_t], [self._rho * self._delta_t, self._delta_t]], size=[num_sample,
                                      self._num_time_interval])
         x_sample = np.zeros([num_sample, self._num_time_interval + 1])
-        x_sample[:, 0] = np.ones(num_sample) * self._x_init
+        x_sample[:, 0] = self._x_init
         
         y_sample = np.zeros([num_sample, self._num_time_interval + 1])
-        y_sample[:, 0] = np.ones(num_sample) * 0.09
+        y_sample[:, 0] = self._y_init
         
         # for i in xrange(self._n_time):
         # 	x_sample[:, :, i + 1] = (1 + self._mu_bar * self._delta_t) * x_sample[:, :, i] + (
@@ -277,17 +279,17 @@ class PricingOptionOneFactor(Equation):
         # we are given all the samples of each dimension at the final time, we only want the price sample of each time so just return the max of those calculations        
         #temp = tf.reduce_max(x, 1, keep_dims=True)
         temp = x[:, 0]
-        return tf.maximum(temp - 95, 0)
+        return tf.maximum(temp - self._strike, 0)
     
 # Stochastic volatility model with multi (two) factors
 class PricingOptionMultiFactor(Equation):
     def __init__(self, dim, total_time, num_time_interval):
         super(PricingOptionMultiFactor, self).__init__(dim, total_time, num_time_interval)
         self._num_assets = 1
-        self._x_init = np.ones(self._num_assets) * 55
+        self._x_init = np.ones(self._num_assets) * 100
         self._y_init = np.ones(self._num_assets) * -1
         self._z_init = np.ones(self._num_assets) * -1
-        self._r = 0.1
+        self._r = 0.05
         
         # correlation parameters
         self._rho_1 = -0.2
@@ -295,8 +297,8 @@ class PricingOptionMultiFactor(Equation):
         self._rho_12 = 0.0
         
         # reversion rate parameters
-        self._alpha_revert = 5
-        self._delta = 1
+        self._alpha_revert = 20
+        self._delta = 0.1
         
         self._mf = -0.8
         self._ms = -0.8
@@ -304,6 +306,7 @@ class PricingOptionMultiFactor(Equation):
         self._vov_f = 0.5
         self._vov_s = 0.8
         
+        self._strike = 110
         self._alpha = 1.0 / self._dim
 
     def sample(self, num_sample):
@@ -319,7 +322,7 @@ class PricingOptionMultiFactor(Equation):
         z_sample = np.zeros([num_sample, self._num_time_interval + 1])
         z_sample[:, 0] = self._z_init
         
-        
+        # validated
         for i in range(self._num_time_interval):
             vol_factor = np.exp(y_sample[:, i] + z_sample[:, i])
             #x_sample[:, i + 1] = x_sample[:, i] * np.exp((np.ones(num_sample) * self._r - (np.power(np.maximum(y_sample[:, i], np.zeros(num_sample)), 2)) / 2) * self._delta_t) * np.exp(np.multiply(np.sqrt(np.maximum(y_sample[:, i], np.zeros(num_sample))), dw_sample[:, i, 0]))
@@ -362,7 +365,7 @@ class PricingOptionMultiFactor(Equation):
         #temp = tf.reduce_max(x, 1, keep_dims=True)
         #logging.info("X info: ", x)
         temp = x[:, 0]
-        return tf.maximum(temp - 50, 0)
+        return tf.maximum(temp - self._strike, 0)
 
 
 class PricingDefaultRisk(Equation):

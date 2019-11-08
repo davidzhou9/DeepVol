@@ -192,6 +192,7 @@ class FeedForwardModel(object):
             # standardize the path input first
             # the affine  could be redundant, but helps converge faster
             hiddens = self._batch_norm(x, name='path_input_norm')
+            hiddens = x
             for i in range(1, len(self._config.num_hiddens)-1):
                 hiddens = self._dense_batch_layer(hiddens,
                                                   self._config.num_hiddens[i],
