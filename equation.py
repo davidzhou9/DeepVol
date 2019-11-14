@@ -144,7 +144,7 @@ class PricingOptionNormal(Equation):
         self._mu_bar = 0.05
         self._r = 0.05
         self._alpha = 1.0 / self._dim
-        self._strike = 120
+        self._strike = 100
     """    
     def sample(self, num_sample):
         dw_sample = normal.rvs(size=[num_sample,

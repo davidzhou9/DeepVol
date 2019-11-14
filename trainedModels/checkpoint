@@ -1,0 +1,2 @@
+model_checkpoint_path: "C:/Users/david/Documents/School Work/College/Thesis/DeepBSDE/trainedModels/model.ckpt"
+all_model_checkpoint_paths: "C:/Users/david/Documents/School Work/College/Thesis/DeepBSDE/trainedModels/model.ckpt"

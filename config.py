@@ -3,11 +3,11 @@ import numpy as np
 
 class Config(object):
     n_layer = 2
-    batch_size = 5000 # original was 64
+    batch_size = 100 # original was 64
     valid_size = 256 # original was 256
     step_boundaries = [2000, 4000]
     num_iterations = 2
-    logging_frequency = 10 # original is 100
+    logging_frequency = 100 # original is 100
     verbose = True
     y_init_range = [0, 1]
 
@@ -47,13 +47,13 @@ class PricingOptionConfig(Config):
     
 class PricingOptionNormalConfig(Config):
     dim = 1
-    total_time = 1.0
+    total_time = 0.5
     num_time_interval = 50
     lr_values = list(np.array([5e-3, 5e-3]))
     lr_boundaries = [2000]
-    num_iterations = 2000
+    num_iterations = 3000
     num_hiddens = [dim, 10, 10, dim]
-    y_init_range = [0, 5]
+    y_init_range = [2.5, 3.5]
     
 
 class PricingOptionOneFactorConfig(Config):
@@ -62,7 +62,7 @@ class PricingOptionOneFactorConfig(Config):
     num_time_interval = 50 # original was 20
     lr_values = list(np.array([5e-3, 5e-3]))
     lr_boundaries = [2000]
-    num_iterations = 150 # original was 5000
+    num_iterations = 20 # original was 5000
     num_hiddens = [dim, 5, 5, dim]
     y_init_range = [0, 1]
     

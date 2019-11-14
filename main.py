@@ -14,7 +14,9 @@ from solver import FeedForwardModel
 import warnings
 warnings.simplefilter("ignore")
 
-FLAGS = tf.app.flags.FLAGS
+TF_DTYPE = tf.float64
+FLAGS = tf.compat.v1.flags.FLAGS
+#FLAGS = tf.app.flags.FLAGS
 tf.app.flags.DEFINE_string('problem_name', 'HJB',
                            """The name of partial differential equation.""")
 tf.app.flags.DEFINE_integer('num_run', 1,
@@ -69,6 +71,16 @@ def main():
                        header="step,loss_function,target_value,elapsed_time",
                        comments='')
             
+            print("test 1")
+            model.test()
+            
+            print("test 2")
+            model.test()
+            
+            
+            saver = tf.train.Saver()
+            save_path = saver.save(sess, "C:/Users/david/Documents/School Work/College/Thesis/DeepBSDE/trainedModels/model.ckpt")
+            logging.info('Saved to %s' % (save_path))
 
 if __name__ == '__main__':
     main()

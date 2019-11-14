@@ -5,6 +5,8 @@ import time
 import numpy as np
 import tensorflow as tf
 from scipy.stats import multivariate_normal as normal
+import warnings
+warnings.simplefilter("ignore")
 
 TF_DTYPE = tf.float64
 MOMENTUM = 0.99
@@ -24,6 +26,19 @@ class FeedForwardModel(object):
         self._total_time = bsde.total_time
         # ops for statistics update of batch normalization
         self._extra_train_ops = []
+        
+    def test(self):
+        dw_test, x_test = self._bsde.sample(3)
+        #print("spot and vol factor: ", x_train) # use print to output to console
+        #print("dw_train: ", dw_train)
+        #print("d_W: ", dw_train)
+        #logging.info(tf.strings.as_string(x_train))
+        loss_Out, init_Out, output_Z_Vals = self._sess.run([self._loss, self._y_init, self._z], feed_dict={self._dw: dw_test,
+                                                       self._x: x_test,
+                                                       self._is_training: False})
+    
+        print("Loss out: ", loss_Out)
+        print("calc_Grads: ", output_Z_Vals)
 
     def train(self):
         start_time = time.time()
@@ -31,7 +46,7 @@ class FeedForwardModel(object):
         training_history = []
         # for validation
         
-        dw_valid, x_valid = self._bsde.sample(self._config.valid_size) # sample from your bsde problem
+        dw_valid, x_valid = self._bsde.sample(self._config.batch_size) # sample from your bsde problem
         
         
         # can still use batch norm of samples in the validation phase
@@ -104,13 +119,14 @@ class FeedForwardModel(object):
                                                      dtype=TF_DTYPE)) # y init is picked from a certain range specified in the config file
         
         # guess for the sigma grad term
-        z_init = tf.Variable(tf.random_uniform([1, self._dim],
+        self._z_init = tf.Variable(tf.random_uniform([1, self._dim],
                                                minval=-.1, maxval=.1,
                                                dtype=TF_DTYPE))
         
         # tf.ones creates a tensor of all ones (who knew?), tf.shape returns the shape of a tensor (i.e. dimensions in form of tensor)
+        # HERE SELF._DW[0] returns NUMBER OF SAMPLES
         # here tf.shape is get dimensioality of the number of samples and appending an extra one
-        all_one_vec = tf.ones(shape=tf.stack([tf.shape(self._dw)[0], 1]), dtype=TF_DTYPE)
+        all_one_vec = tf.ones(shape=tf.stack([tf.shape(self._dw)[0], 1]), dtype=TF_DTYPE) # of samples x 1
         print("all_one_vec: ", all_one_vec)
         
         
@@ -153,6 +169,90 @@ class FeedForwardModel(object):
         
         ############################################################################################
         
+        y = all_one_vec * self._y_init # number of dimensions by 1
+        
+        output_z = []
+        
+        for t in range(self._num_time_interval - 1):
+            output_z.append(tf.matmul(all_one_vec, self._z_init))
+            
+        
+        #self._z = tf.matmul(tf.ones(shape = tf.stack([tf.shape(self._dw)[0], self._num_time_interval, self._config.dim]), dtype = TF_DTYPE), self._z_init) # will be time x dimension x dimension
+        
+        #self._gradient = tf.Variable(tf.zeros([tf.shape(self._dw)[2], 1], dtype = TF_DTYPE)) # dimensionality is number of time steps 
+        
+        # need to think more critically about how to structure gradient, need it sample, dimensionality, time steps
+        gradients = np.zeros((self._num_time_interval, self._dim, self._dim))
+        print("gradients: ", gradients)
+        print("y: ", y)
+        
+        print("z output: ", output_z)
+        with tf.variable_scope('forward'):
+            
+            # iterate through time (cooL)
+            for t in range(0, self._num_time_interval-1):
+                y = y - self._bsde.delta_t * (
+                    self._bsde.f_tf(time_stamp[t], self._x[:, :, t], y, output_z[t]) # call f function (e.g. rP)
+                ) + tf.reduce_sum(output_z[t] * self._dw[:, :, t], 1, keep_dims=True)
+                output_z[t] = self._subnetwork(self._x[:, :, t + 1], str(t + 1)) / self._dim
+                #self._z[t, :, :] = self._subnetwork(self._x[:, :, t + 1], str(t + 1)) / self._dim # ALERT: WHY DIVIDE?
+                #gradients[t, :, :] = self._z[t + 1, :, :].eval()
+            # terminal time
+            y = y - self._bsde.delta_t * self._bsde.f_tf(
+                time_stamp[-1], self._x[:, :, -2], y, output_z[-1]
+            ) + tf.reduce_sum(output_z[-1] * self._dw[:, :, -1], 1, keep_dims=True)
+            delta = y - self._bsde.g_tf(self._total_time, self._x[:, :, -1])
+            #gradients[-1, :, :] = delta.eval()
+            # use linear approximation outside the clipped range
+            self._loss = tf.reduce_mean(tf.where(tf.abs(delta) < DELTA_CLIP, tf.square(delta),
+                                                 2 * DELTA_CLIP * tf.abs(delta) - DELTA_CLIP ** 2))
+            
+        self._z = tf.stack(output_z)
+        # train operations
+        global_step = tf.get_variable('global_step', [],
+                                      initializer=tf.constant_initializer(0),
+                                      trainable=False, dtype=tf.int32)
+        learning_rate = tf.train.piecewise_constant(global_step,
+                                                    self._config.lr_boundaries,
+                                                    self._config.lr_values)
+        trainable_variables = tf.trainable_variables()
+        grads = tf.gradients(self._loss, trainable_variables)
+        optimizer = tf.train.AdamOptimizer(learning_rate=learning_rate)
+        apply_op = optimizer.apply_gradients(zip(grads, trainable_variables),
+                                             global_step=global_step, name='train_step')
+        all_ops = [apply_op] + self._extra_train_ops
+        self._train_ops = tf.group(*all_ops)
+        self._t_build = time.time()-start_time
+        #return z;
+        
+        
+        # VERIFIED VERSIOn
+        """
+        start_time = time.time()
+        time_stamp = np.arange(0, self._bsde.num_time_interval) * self._bsde.delta_t
+        
+        # placeholders are variables that we will assign data to at a later date
+        # will need to feed actual values into these variables at runtime (done in the train function)
+        self._dw = tf.placeholder(TF_DTYPE, [None, self._dim, self._num_time_interval], name='dW') # TF_DTYPE is tf.float64
+        self._x = tf.placeholder(TF_DTYPE, [None, self._dim, self._num_time_interval + 1], name='X')
+        self._is_training = tf.placeholder(tf.bool)
+        
+        # initial guess for correct option value (or whatever)
+        self._y_init = tf.Variable(tf.random_uniform([1],
+                                                     minval=self._config.y_init_range[0],
+                                                     maxval=self._config.y_init_range[1],
+                                                     dtype=TF_DTYPE)) # y init is picked from a certain range specified in the config file
+        
+        # guess for the sigma grad term
+        z_init = tf.Variable(tf.random_uniform([1, self._dim],
+                                               minval=-.1, maxval=.1,
+                                               dtype=TF_DTYPE))
+        
+        # tf.ones creates a tensor of all ones (who knew?), tf.shape returns the shape of a tensor (i.e. dimensions in form of tensor)
+        # here tf.shape is get dimensioality of the number of samples and appending an extra one
+        all_one_vec = tf.ones(shape=tf.stack([tf.shape(self._dw)[0], 1]), dtype=TF_DTYPE)
+        print("all_one_vec: ", all_one_vec)
+        
         y = all_one_vec * self._y_init
         z = tf.matmul(all_one_vec, z_init)
         with tf.variable_scope('forward'):
@@ -186,6 +286,8 @@ class FeedForwardModel(object):
         all_ops = [apply_op] + self._extra_train_ops
         self._train_ops = tf.group(*all_ops)
         self._t_build = time.time()-start_time
+        """
+
 
     def _subnetwork(self, x, name):
         with tf.variable_scope(name):
