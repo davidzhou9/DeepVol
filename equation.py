@@ -140,7 +140,7 @@ class PricingOptionNormal(Equation):
     def __init__(self, dim, total_time, num_time_interval):
         super(PricingOptionNormal, self).__init__(dim, total_time, num_time_interval)
         self._x_init = np.ones(self._dim) * 100
-        self._sigma = 0.05
+        self._sigma = 0.15
         self._mu_bar = 0.05
         self._r = 0.05
         self._alpha = 1.0 / self._dim
@@ -189,6 +189,16 @@ class PricingOptionNormal(Equation):
         
         return np.reshape(dw_sample, (len(dw_sample), 1, self.num_time_interval)), np.reshape(x_sample, (len(x_sample), 1, self.num_time_interval + 1))
 
+    def interest_Rate(self):
+        return self._r
+    
+    def diffusion_Matrix(self):
+        diff_Mat = np.zeros(shape = [self._dim, self._dim])
+        
+        diff_Mat[0, 0] = self._sigma**2
+        
+        return diff_Mat
+        
     def f_tf(self, t, x, y, z):
         #temp = tf.reduce_sum(z, 1, keep_dims=True) / self._sigma
         return -self._r * y
@@ -207,14 +217,14 @@ class PricingOptionOneFactor(Equation):
         self._x_init = np.ones(self._num_assets) * 100
         self._r = 0.05
         
-        self._y_init = np.ones(1) * 0.01
+        self._y_init = np.ones(1) * 0.04
         self._rho = -0.4
         self._reversion_Rate = 0.5
-        self._mean_Rate = 0.01
-        self._vol_Of_Vol = 0.2
+        self._mean_Rate = 0.04
+        self._vol_Of_Vol = 0.1
         
         self._alpha = 1.0 / self._dim
-        self._strike = 105
+        self._strike = 100
 
     def sample(self, num_sample):
         dw_sample = normal.rvs([0, 0], [[self._delta_t, self._rho * self._delta_t], [self._rho * self._delta_t, self._delta_t]], size=[num_sample,
@@ -269,6 +279,20 @@ class PricingOptionOneFactor(Equation):
         return new_DW, new_Process
         #return new_DW, np.reshape(x_sample, (len(x_sample), 1, self.num_time_interval + 1))
 
+    def interest_Rate(self):
+        return self._r
+    
+    def diffusion_Matrix(self, x, v):
+        diff_Mat = np.zeros(shape = [self._dim, self._dim])
+        
+        diff_Mat[0, 0] = v * x**2
+        diff_Mat[1, 1] = v * self._vol_Of_Vol**2
+        
+        diff_Mat[0, 1] = v * self._rho * self._vol_Of_Vol * x
+        diff_Mat[1, 0] = diff_Mat[0, 1]
+        
+        return diff_Mat
+
     def f_tf(self, t, x, y, z):
         return -self._r * y
 
@@ -306,7 +330,7 @@ class PricingOptionMultiFactor(Equation):
         self._vov_f = 0.5
         self._vov_s = 0.8
         
-        self._strike = 110
+        self._strike = 100
         self._alpha = 1.0 / self._dim
 
     def sample(self, num_sample):
@@ -357,6 +381,27 @@ class PricingOptionMultiFactor(Equation):
             new_Process = np.append(new_Process, np.array([tempArrayOther]), axis = 0)
             
         return new_DW, new_Process
+
+    def interest_Rate(self):
+        return self._r
+    
+    def diffusion_Matrix(self, x, y, z):
+        diff_Mat = np.zeros(shape = [self._dim, self._dim])
+        
+        diff_Mat[0, 0] = ((math.exp(y + z))**2) * x**2
+        diff_Mat[1, 1] = 2 * self._alpha_revert * self._vov_f**2
+        diff_Mat[2, 2] = 2 * self._delta * self._vov_s**2
+        
+        diff_Mat[0, 1] = self._vov_f * math.sqrt(2 * self._alpha_revert) * self._rho_1 * (math.exp(y + z)) * x
+        diff_Mat[1, 0] = diff_Mat[0, 1]
+        
+        diff_Mat[0, 2] = self._vov_s * math.sqrt(2 * self._delta) * self._rho_2 * (math.exp(y + z)) * x
+        diff_Mat[2, 0] = diff_Mat[0, 2]
+        
+        diff_Mat[1, 2] = 2 * self._vov_f * self._vov_s * math.sqrt(self._alpha_revert * self._delta) * self._rho_12
+        diff_Mat[2, 1] = diff_Mat[1, 2]
+        
+        return diff_Mat
 
     def f_tf(self, t, x, y, z):
         return -self._r * y

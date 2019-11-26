@@ -24,11 +24,17 @@ x_init = np.ones(num_assets) * 100
 y_init = np.ones(1) * 0.0989
 r = 0.04
 
-sampleY = np.array([0.09, 0.01, 0.15, 0.2, -0.1, 0.3])
+sampleY = np.array([[0.09, 0.01, 0.15], [0.1, 0.2, 0]])
+
+temp = sampleY[0]
+print(temp)
+
+"""
 num_sample = len(sampleY)
 dw_sample = np.array([0.01, 0.03, 0.01, 0.8, -.15, -0.2])
 
 print(sampleY + dw_sample)
+"""
 """
 temp = np.multiply(np.sqrt(np.maximum(sampleY, np.zeros(num_sample))), dw_sample)
 print(temp)

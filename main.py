@@ -54,7 +54,7 @@ def main():
             logging.info('Begin to solve %s with run %d' % (problem_name, idx_run))
             
             ###### IMPORTANT ######
-            model = FeedForwardModel(config, bsde, sess) # create the feed forward model
+            model = FeedForwardModel(config, bsde, sess, problem_name) # create the feed forward model
             if bsde.y_init:
                 logging.info('Y0_true: %.4e' % bsde.y_init)
             model.build() # bulid the model
@@ -64,23 +64,30 @@ def main():
             #                 '{:.2%}'.format(
             #                     abs(bsde.y_init - training_history[-1, 2])/bsde.y_init))
             # save training history
+            
+            
             np.savetxt('{}_training_history_{}.csv'.format(path_prefix, idx_run),
                        training_history,
                        fmt=['%d', '%.5e', '%.5e', '%d'],
                        delimiter=",",
                        header="step,loss_function,target_value,elapsed_time",
                        comments='')
-            
+         
             print("test 1")
-            model.test()
-            
-            print("test 2")
-            model.test()
+            output = model.test()
+            np.savetxt('{}_PLfigures.csv'.format(path_prefix, idx_run),
+                       output,
+                       fmt=['%d'],
+                       delimiter=",",
+                       header="PL",
+                       comments='')
+            #print("test 2")
+            #model.test()
             
             
             saver = tf.train.Saver()
-            save_path = saver.save(sess, "C:/Users/david/Documents/School Work/College/Thesis/DeepBSDE/trainedModels/model.ckpt")
-            logging.info('Saved to %s' % (save_path))
+            #save_path = saver.save(sess, "C:/Users/david/Documents/School Work/College/Thesis/DeepBSDE/trainedModels/model.ckpt")
+            #logging.info('Saved to %s' % (save_path))
 
 if __name__ == '__main__':
     main()
