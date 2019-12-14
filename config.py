@@ -47,34 +47,34 @@ class PricingOptionConfig(Config):
     
 class PricingOptionNormalConfig(Config):
     dim = 1
-    total_time = 0.5
-    num_time_interval = 20
+    total_time = 0.1
+    num_time_interval = 80
     lr_values = list(np.array([5e-3, 5e-3]))
     lr_boundaries = [2000]
-    num_iterations = 125
+    num_iterations = 150
     num_hiddens = [dim, 10, 10, dim]
-    y_init_range = [5, 6]
+    y_init_range = [2, 2.04]
     
 
 class PricingOptionOneFactorConfig(Config):
     dim = 2
-    total_time = 0.5
-    num_time_interval = 20
+    total_time = 30/252
+    num_time_interval = 80
     lr_values = list(np.array([5e-3, 5e-3]))
     lr_boundaries = [2000]
-    num_iterations = 300 # original was 5000
+    num_iterations = 150 # original was 5000
     num_hiddens = [dim, 5, 5, dim]
-    y_init_range = [6.5, 7.2]
+    y_init_range = [0, 0.2]
     
 class PricingOptionMultiFactorConfig(Config):
     dim = 3
-    total_time = 0.1
-    num_time_interval = 40
+    total_time = 270/252
+    num_time_interval = 80
     lr_values = list(np.array([5e-3, 5e-3]))
     lr_boundaries = [2000]
     num_iterations = 150
     num_hiddens = [dim, 5, 5, dim]
-    y_init_range = [2.2, 2.7]
+    y_init_range = [3.6, 4.0]
 
 class PricingDefaultRiskConfig(Config):
     dim = 100

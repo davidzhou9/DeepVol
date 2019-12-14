@@ -217,14 +217,14 @@ class PricingOptionOneFactor(Equation):
         self._x_init = np.ones(self._num_assets) * 100
         self._r = 0.05
         
-        self._y_init = np.ones(1) * 0.04
-        self._rho = -0.4
+        self._y_init = np.ones(1) * 0.0225
+        self._rho = -0.8
         self._reversion_Rate = 0.5
-        self._mean_Rate = 0.04
-        self._vol_Of_Vol = 0.1
+        self._mean_Rate = 0.0225
+        self._vol_Of_Vol = 0.5
         
         self._alpha = 1.0 / self._dim
-        self._strike = 100
+        self._strike = 90
 
     def sample(self, num_sample):
         dw_sample = normal.rvs([0, 0], [[self._delta_t, self._rho * self._delta_t], [self._rho * self._delta_t, self._delta_t]], size=[num_sample,
@@ -285,11 +285,11 @@ class PricingOptionOneFactor(Equation):
     def diffusion_Matrix(self, x, v):
         diff_Mat = np.zeros(shape = [self._dim, self._dim])
         
-        diff_Mat[0, 0] = v * x**2
-        diff_Mat[1, 1] = v * self._vol_Of_Vol**2
+        diff_Mat[0, 0] = math.sqrt(v) * x
+        diff_Mat[1, 1] = math.sqrt(v) * self._vol_Of_Vol * math.sqrt(1 - self._rho**2)
         
-        diff_Mat[0, 1] = v * self._rho * self._vol_Of_Vol * x
-        diff_Mat[1, 0] = diff_Mat[0, 1]
+        diff_Mat[0, 1] = 0
+        diff_Mat[1, 0] = math.sqrt(v) * self._rho * self._vol_Of_Vol
         
         return diff_Mat
 
@@ -311,26 +311,26 @@ class PricingOptionMultiFactor(Equation):
         super(PricingOptionMultiFactor, self).__init__(dim, total_time, num_time_interval)
         self._num_assets = 1
         self._x_init = np.ones(self._num_assets) * 100
-        self._y_init = np.ones(self._num_assets) * -1
-        self._z_init = np.ones(self._num_assets) * -1
+        self._y_init = np.ones(self._num_assets) * -0.949
+        self._z_init = np.ones(self._num_assets) * -0.949
         self._r = 0.05
         
         # correlation parameters
-        self._rho_1 = -0.2
-        self._rho_2 = -0.2
-        self._rho_12 = 0.0
+        self._rho_1 = -0.5
+        self._rho_2 = -0.5
+        self._rho_12 = -0.146 # change when maturity changes
         
         # reversion rate parameters
         self._alpha_revert = 20
         self._delta = 0.1
         
-        self._mf = -0.8
-        self._ms = -0.8
+        self._mf = -1.3
+        self._ms = -1
     
         self._vov_f = 0.5
         self._vov_s = 0.8
         
-        self._strike = 100
+        self._strike = 110 # change everytime
         self._alpha = 1.0 / self._dim
 
     def sample(self, num_sample):

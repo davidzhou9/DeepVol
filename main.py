@@ -48,10 +48,50 @@ def main():
     # 3) Build the Model
     # 4) Train the model
 
-    for idx_run in range(1, FLAGS.num_run + 1):
+    # for just pricing
+    
+    """
+    vals = np.array([])
+
+    for idx_run in range(1, 51):
         tf.reset_default_graph()
         with tf.Session() as sess:
-            logging.info('Begin to solve %s with run %d' % (problem_name, idx_run))
+            #logging.info('Begin to solve %s with run %d' % (problem_name, idx_run))
+            
+            ###### IMPORTANT ######
+            model = FeedForwardModel(config, bsde, sess, problem_name) # create the feed forward model
+            if bsde.y_init:
+                logging.info('Y0_true: %.4e' % bsde.y_init)
+            model.build() # bulid the model
+            training_history = model.train() # trin the model
+            #if bsde.y_init:
+            #    logging.info('relative error of Y0: %s',
+            #                 '{:.2%}'.format(
+            #                     abs(bsde.y_init - training_history[-1, 2])/bsde.y_init))
+            # save training history
+            
+        vals = np.append(vals, training_history[len(training_history) - 1, 2])
+        
+    vals = np.append(vals, bsde._total_time)
+    
+    num_Iter = 1
+    while os.path.exists('{}_training_history_{}_{}.csv'.format(path_prefix, idx_run, num_Iter)):
+        num_Iter += 1
+            
+    np.savetxt('{}_training_history_{}_{}.csv'.format(path_prefix, idx_run, num_Iter),
+                       vals,
+                       fmt=['%.5e'],
+                       delimiter=",",
+                       header="target_value",
+                       comments='')
+    
+    """
+    
+
+    for idx_run in range(1, 2):
+        tf.reset_default_graph()
+        with tf.Session() as sess:
+            #logging.info('Begin to solve %s with run %d' % (problem_name, idx_run))
             
             ###### IMPORTANT ######
             model = FeedForwardModel(config, bsde, sess, problem_name) # create the feed forward model
@@ -66,28 +106,25 @@ def main():
             # save training history
             
             
-            np.savetxt('{}_training_history_{}.csv'.format(path_prefix, idx_run),
+            num_Iter = 1
+            while os.path.exists('{}_training_history_FORPL_{}_{}.csv'.format(path_prefix, idx_run, num_Iter)):
+                num_Iter += 1
+            
+            np.savetxt('{}_training_history_FORPL_{}_{}.csv'.format(path_prefix, idx_run, num_Iter),
                        training_history,
                        fmt=['%d', '%.5e', '%.5e', '%d'],
                        delimiter=",",
                        header="step,loss_function,target_value,elapsed_time",
                        comments='')
-         
-            print("test 1")
+        
             output = model.test()
             np.savetxt('{}_PLfigures.csv'.format(path_prefix, idx_run),
                        output,
-                       fmt=['%d'],
+                       fmt=['%f'],
                        delimiter=",",
                        header="PL",
                        comments='')
-            #print("test 2")
-            #model.test()
-            
-            
-            saver = tf.train.Saver()
-            #save_path = saver.save(sess, "C:/Users/david/Documents/School Work/College/Thesis/DeepBSDE/trainedModels/model.ckpt")
-            #logging.info('Saved to %s' % (save_path))
+
 
 if __name__ == '__main__':
     main()

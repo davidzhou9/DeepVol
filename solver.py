@@ -48,7 +48,6 @@ class FeedForwardModel(object):
         # output_Z_Vals is in # of time intervals x number of samples x dimensionality x dimensioinality
     
         #output_Z_Vals_Arry = output_Z_Vals.eval()
-        #sigma_LT = np.linalg.cholesky()
         print("Loss out: ", loss_Out)
         print("Output_Z_Vals: ", output_Z_Vals)
         print("X_test: ", x_test)
@@ -76,15 +75,14 @@ class FeedForwardModel(object):
             print("curr_Stock_Price: ", curr_Stock_Price)
             print("current_Sample[0, :]: ", current_Sample[0, :])
            
-            sigma_SigmaT = self.calculate_Diffusion_Mat(curr_Factors)
-            mat_Sqrt = sy.linalg.sqrtm(sigma_SigmaT)
+            mat_Sqrt = self.calculate_Diffusion_Mat(curr_Factors)
             grads = np.linalg.solve(np.transpose(mat_Sqrt), current_Sample[0, :])
-            print("Sigma_Sigma^T: ", sigma_SigmaT)
             print("mat_Sqrt: ", mat_Sqrt)
             print("grads: ", grads)
             
             # create replicating portfolio
             stock_Position = grads[0] # get the delta term
+            #stock_Position = 0.5
             print("init_Out: ", init_Out)
             print("Stock Position: ", stock_Position)
             # get the first z value
@@ -107,13 +105,13 @@ class FeedForwardModel(object):
                 print("curr_Factors: ", curr_Factors)
                 if (j < self._num_time_interval - 1):
                    
-                    sigma_SigmaT = self.calculate_Diffusion_Mat(curr_Factors)           
-                    mat_Sqrt = sy.linalg.sqrtm(sigma_SigmaT)
+                    mat_Sqrt = self.calculate_Diffusion_Mat(curr_Factors)           
                     print("mat_Sqrt: ", mat_Sqrt)
                     grads = np.linalg.solve(np.transpose(mat_Sqrt), current_Sample[j, :])
                     
                     print("grads: ", grads)
                     stock_Position = grads[0]
+                    #stock_Position = 0.5
                     bond_Position = portfolio - stock_Position * curr_Stock_Price
                     print("Stock Position: ", stock_Position)
                     print("Bond Position: ", bond_Position)
@@ -141,8 +139,7 @@ class FeedForwardModel(object):
         
         #print("reshaped_Z_Vals: ", reshaped_Z_Vals)
         #print("Type of output_Z_Vals: ", type(output_Z_Vals))
-        #print("Output_Z_Vals_Arry: ", output_Z_Vals_Arry)
-        
+        #print("Output_Z_Vals_Arry: ", output_Z_Vals_Arry)        
         
     def calculate_Diffusion_Mat(self, curr_Factors):
         
@@ -239,17 +236,20 @@ class FeedForwardModel(object):
                                                      dtype=TF_DTYPE)) # y init is picked from a certain range specified in the config file
         
         # guess for the sigma grad term
-        """ FOR NORMAL BLS
+        #FOR NORMAL BLS
+        
         self._z_init = tf.Variable(tf.random_uniform([1, self._dim],
-                                               minval=10, maxval=10.05,
-                                               dtype=TF_DTYPE))"""
+                                               minval=3, maxval=3.05,
+                                               dtype=TF_DTYPE))
+        """
         
-        """ FOR HESTON MODEL
-        lower_Delta = 80
-        upper_Delta = 80.05
+        #FOR HESTON MODEL
         
-        lower_Other = -10.05
-        upper_Other = -10
+        lower_Delta = 160
+        upper_Delta = 160.05
+        
+        lower_Other = -50.05
+        upper_Other = -50
         print("Delta: ", lower_Delta, ", ", upper_Delta)
         print("Other: ", upper_Other, ", ", upper_Other)
         
@@ -259,8 +259,9 @@ class FeedForwardModel(object):
         
         # For multiscale model
         
-        lower_Delta = 80
-        upper_Delta = 80.05
+        """
+        lower_Delta = 100
+        upper_Delta = 100.05
         
         lower_Other1 = -10.05
         upper_Other1 = -10
@@ -276,7 +277,7 @@ class FeedForwardModel(object):
         self._z_init = tf.Variable(tf.stack([tf.random.uniform([1], lower_Delta, upper_Delta, dtype = tf.float64), 
                                              tf.random.uniform([1], lower_Other1, upper_Other1, dtype = tf.float64),
                                              tf.random.uniform([1], lower_Other2, upper_Other2, dtype = tf.float64)], axis = 1))
-        
+        """
         
         # tf.ones creates a tensor of all ones (who knew?), tf.shape returns the shape of a tensor (i.e. dimensions in form of tensor)
         # HERE SELF._DW[0] returns NUMBER OF SAMPLES
