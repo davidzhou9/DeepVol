@@ -1,68 +1,24 @@
-mat = readmatrix('BLSPrices.csv');
-tempVal = zeros(length(mat) - 2, size(mat, 2));
+matMS = readmatrix('MSPrices.csv');
+tempValMS = zeros(length(matMS) - 2, size(matMS, 2));
 
 stock_Price = 100;
 r = 0.05;
 
-for col = 1:size(mat, 2)
-    T = mat(1, col) / 252;
-    K = mat(2, col);
-    for i=3:length(mat)    
-        tempVal(i - 2, col) = blsimpv(stock_Price, K, r, T, mat(i, col));
+for col = 1:size(matMS, 2)
+    T = matMS(1, col) / 252;
+    K = matMS(2, col);
+    for i=3:length(matMS)    
+        tempValMS(i - 2, col) = blsimpv(stock_Price, K, r, T, matMS(i, col));
     end
 end
 
-%% Normalize
+%% Create Average IV map
 
-%normalized_IV = normalize(tempVal, 1);
-%% Create IV map
-S = 100;
-r = 0.05;
-
-times = [30/252 60/252 90/252 180/252 270/252];
-strikes = [90 95 100 105 110];
-prices = [10.684
-6.084
-2.306
-0.396
-0.036
-11.458
-7.078
-3.445
-1.135
-0.247
-12.193
-7.957
-4.397
-1.900
-0.603
-14.268
-10.272
-6.823
-4.069
-2.117
-16.174
-12.355
-8.925
-6.043
-3.785]
-prices = reshape(prices, [5, 5]);
-
-tempVal = zeros(5, 5);
-
-for col = 1:5
-    T = times(col);
-    for i=1:5    
-        K = strikes(i);
-        tempVal(i, col) = blsimpv(S, K, r, T, prices(i, col));
-    end
-end
-%%
+averaged_IVsMS = mean(tempValMS, 1);
 
 [X, Y] = meshgrid([30 60 90 180 270], [90 95 100 105 110]);
 
-figure
-surf(X, Y, tempVal)
+surf(X, Y, reshape(averaged_IVsMS, [5, 5]))
 xlabel('Days to Maturity')
 ylabel('Strike')
 zlabel('IV')
@@ -71,79 +27,114 @@ set(gca, 'ydir', 'reverse')
 
 %% Run PCA on entire surface
 
-[coeff_All, score_All, latent_All, tsquared_All, explained_All, mu_All] = pca(tempVal, 'centered', 'off');
+[coeff_AllMS, score_AllMS, latent_AllMS, tsquared_AllMS, explained_AllMS, mu_AllMS] = pca(tempValMS);
 
+
+%% Perform factor loading analysis on entire surface
+%MSAll_FactorLoadings = zeros(length(coeff_AllMS), length(coeff_AllMS));
+
+%for i = 1:length(coeff_AllMS)
+%    if i == 1
+%        MSAll_FactorLoadings(:, i) = coeff_AllMS(:, 1).^2;
+%    else
+%        MSAll_FactorLoadings(:, i) = coeff_AllMS(:, i).^2 + MSAll_FactorLoadings(:, i - 1);
+%    end
+%end
 
 %% Run PCA by fixing maturity
 
-[coeff_FixM30, score_FixM30, latent_FixM30, tsquared_FixM30, explained_FixM30, mu_FixM30] = pca(tempVal(:, (1:5)), 'centered', 'off'); 
-[coeff_FixM60, score_FixM60, latent_FixM60, tsquared_FixM60, explained_FixM60, mu_FixM60] = pca(tempVal(:, (6:10)), 'centered', 'off'); 
-[coeff_FixM90, score_FixM90, latent_FixM90, tsquared_FixM90, explained_FixM90, mu_FixM90] = pca(tempVal(:, (11:15)), 'centered', 'off'); 
-[coeff_FixM180, score_FixM180, latent_FixM180, tsquared_FixM180, explained_FixM180, mu_FixM180] = pca(tempVal(:, (16:20)), 'centered', 'off'); 
-[coeff_FixM270, score_FixM270, latent_FixM270, tsquared_FixM270, explained_FixM270, mu_FixM270] = pca(tempVal(:, (21:25)), 'centered', 'off'); 
+[coeff_FixM30MS, score_FixM30MS, latent_FixM30MS, tsquared_FixM30MS, explained_FixM30MS, mu_FixM30MS] = pca(tempValMS(:, (1:5))); 
+[coeff_FixM60MS, score_FixM60MS, latent_FixM60MS, tsquared_FixM60MS, explained_FixM60MS, mu_FixM60MS] = pca(tempValMS(:, (6:10))); 
+[coeff_FixM90MS, score_FixM90MS, latent_FixM90MS, tsquared_FixM90MS, explained_FixM90MS, mu_FixM90MS] = pca(tempValMS(:, (11:15))); 
+[coeff_FixM180MS, score_FixM180MS, latent_FixM180MS, tsquared_FixM180MS, explained_FixM180MS, mu_FixM180MS] = pca(tempValMS(:, (16:20))); 
+[coeff_FixM270MS, score_FixM270MS, latent_FixM270MS, tsquared_FixM270MS, explained_FixM270MS, mu_FixM270MS] = pca(tempValMS(:, (21:25))); 
+
+%% Perform factor analysis, fixed maturity
+
+%MSM60_FactorLoadings = zeros(length(coeff_FixM30MS), length(coeff_FixM30MS));
+
+%for i = 1:length(coeff_FixM30MS)
+    
+    %if i == 1
+    %    MSM60_FactorLoadings(:, i) = coeff_FixM60MS(:, 1).^2;
+    %else
+    %    MSM60_FactorLoadings(:, i) = coeff_FixM60MS(:, i).^2 + MSM60_FactorLoadings(:, i - 1);
+    %end
+    %MSM30_FactorLoadings(:, i) = coeff_FixM30MS(:, i).^2;
+%end
 
 %% Run PCA by fixing strike
 
-[coeff_FixK90, score_FixK90, latent_FixK90, tsquared_FixK90, explained_FixK90, mu_FixK90] = pca(tempVal(:, (1:5:21)), 'centered', 'off'); 
-[coeff_FixK95, score_FixK95, latent_FixK95, tsquared_FixK95, explained_FixK95, mu_FixK95] = pca(tempVal(:, (2:5:22)), 'centered', 'off'); 
-[coeff_FixK100, score_FixK100, latent_FixK100, tsquared_FixK100, explained_FixK100, mu_FixK100] = pca(tempVal(:, (3:5:23)), 'centered', 'off'); 
-[coeff_FixK105, score_FixK105, latent_FixK105, tsquared_FixK105, explained_FixK105, mu_FixK105] = pca(tempVal(:, (4:5:24)), 'centered', 'off'); 
-[coeff_FixK110, score_FixK110, latent_FixK110, tsquared_FixK110, explained_FixK110, mu_FixK110] = pca(tempVal(:, (5:5:25)), 'centered', 'off'); 
+[coeff_FixK90MS, score_FixK90MS, latent_FixK90MS, tsquared_FixK90MS, explained_FixK90MS, mu_FixK90MS] = pca(tempValMS(:, (1:5:21))); 
+[coeff_FixK95MS, score_FixK95MS, latent_FixK95MS, tsquared_FixK95MS, explained_FixK95MS, mu_FixK95MS] = pca(tempValMS(:, (2:5:22))); 
+[coeff_FixK100MS, score_FixK100MS, latent_FixK100MS, tsquared_FixK100MS, explained_FixK100MS, mu_FixK100MS] = pca(tempValMS(:, (3:5:23))); 
+[coeff_FixK105MS, score_FixK105MS, latent_FixK105MS, tsquared_FixK105MS, explained_FixK105MS, mu_FixK105MS] = pca(tempValMS(:, (4:5:24))); 
+[coeff_FixK110MS, score_FixK110MS, latent_FixK110MS, tsquared_FixK110MS, explained_FixK110MS, mu_FixK110MS] = pca(tempValMS(:, (5:5:25))); 
 
 %% Some Visualizations
-scatter(score_All(:, 1), score_All(:, 2), 20, 'blue', 'filled')
-title('PCA on Entire IV Surface, Projection onto 1st Two PC')
+scatter(score_AllMS(:, 1), score_AllMS(:, 2), 20, 'blue', 'filled')
+title('PCA on Entire IV Surface, Projection onto 1st Two PC (MS)')
 figure
 
 %%
 
-scatter(score_FixM30(:, 1), score_FixM30(:, 2), 20, 'blue', 'filled')
+scatter(score_FixM30MS(:, 1), score_FixM30MS(:, 2), 20, 'blue', 'filled')
+title('PCA for T = 30, Projection onto First Two PCs (MS)')
 xlabel('1st PC')
 ylabel('2nd PC')
 figure
 
-scatter(score_FixM60(:, 1), score_FixM60(:, 2), 20, 'blue', 'filled')
+scatter(score_FixM60MS(:, 1), score_FixM60MS(:, 2), 20, 'blue', 'filled')
+title('PCA for T = 60, Projection onto First Two PCs (MS)')
 xlabel('1st PC')
 ylabel('2nd PC')
 figure
 
-scatter(score_FixM90(:, 1), score_FixM90(:, 2), 20, 'blue', 'filled')
+scatter(score_FixM90MS(:, 1), score_FixM90MS(:, 2), 20, 'blue', 'filled')
+title('PCA for T = 90, Projection onto First Two PCs (MS)')
 xlabel('1st PC')
 ylabel('2nd PC')
 figure
 
-scatter(score_FixM180(:, 1), score_FixM180(:, 2), 20, 'blue', 'filled')
+scatter(score_FixM180MS(:, 1), score_FixM180MS(:, 2), 20, 'blue', 'filled')
+title('PCA for T = 180, Projection onto First Two PCs (MS)')
 xlabel('1st PC')
 ylabel('2nd PC')
 figure
 
-scatter(score_FixM270(:, 1), score_FixM270(:, 2), 20, 'blue', 'filled')
+scatter(score_FixM270MS(:, 1), score_FixM270MS(:, 2), 20, 'blue', 'filled')
+title('PCA for T = 270, Projection onto First Two PCs (MS)')
 xlabel('1st PC')
 ylabel('2nd PC')
 figure
 
 %%
-scatter(score_FixK90(:, 1), score_FixK90(:, 2), 20, 'blue', 'filled')
+scatter(score_FixK90MS(:, 1), score_FixK90MS(:, 2), 20, 'blue', 'filled')
+title('PCA for K = 90, Projection onto First Two PCs (MS)')
 xlabel('1st PC')
 ylabel('2nd PC')
 figure
 
-scatter(score_FixK95(:, 1), score_FixK95(:, 2), 20, 'blue', 'filled')
+scatter(score_FixK95MS(:, 1), score_FixK95MS(:, 2), 20, 'blue', 'filled')
+title('PCA for K = 95, Projection onto First Two PCs (MS)')
 xlabel('1st PC')
 ylabel('2nd PC')
 figure
 
-scatter(score_FixK100(:, 1), score_FixK100(:, 2), 20, 'blue', 'filled')
+scatter(score_FixK100MS(:, 1), score_FixK100MS(:, 2), 20, 'blue', 'filled')
+title('PCA for K = 100, Projection onto First Two PCs (MS)')
 xlabel('1st PC')
 ylabel('2nd PC')
 figure
 
-scatter(score_FixK105(:, 1), score_FixK105(:, 2), 20, 'blue', 'filled')
+scatter(score_FixK105MS(:, 1), score_FixK105MS(:, 2), 20, 'blue', 'filled')
+title('PCA for K = 105, Projection onto First Two PCs (MS)')
 xlabel('1st PC')
 ylabel('2nd PC')
 figure
 
-scatter(score_FixK110(:, 1), score_FixK110(:, 2), 20, 'blue', 'filled')
+scatter(score_FixK110MS(:, 1), score_FixK110MS(:, 2), 20, 'blue', 'filled')
+title('PCA for K = 110, Projection onto First Two PCs (MS)')
 xlabel('1st PC')
 ylabel('2nd PC')
 figure

@@ -1,0 +1,265 @@
+WARNING:tensorflow:From main.py:57: The name tf.reset_default_graph is deprecated. Please use tf.compat.v1.reset_default_graph instead.
+
+WARNING From main.py:57: The name tf.reset_default_graph is deprecated. Please use tf.compat.v1.reset_default_graph instead.
+
+WARNING:tensorflow:From main.py:58: The name tf.Session is deprecated. Please use tf.compat.v1.Session instead.
+
+WARNING From main.py:58: The name tf.Session is deprecated. Please use tf.compat.v1.Session instead.
+
+2019-12-15 14:38:57.572674: I tensorflow/stream_executor/platform/default/dso_loader.cc:44] Successfully opened dynamic library libcuda.so.1
+2019-12-15 14:38:57.592216: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1618] Found device 0 with properties: 
+name: Tesla P100-PCIE-16GB major: 6 minor: 0 memoryClockRate(GHz): 1.3285
+pciBusID: 0000:83:00.0
+2019-12-15 14:38:57.592859: I tensorflow/stream_executor/platform/default/dso_loader.cc:44] Successfully opened dynamic library libcudart.so.10.0
+2019-12-15 14:38:57.595143: I tensorflow/stream_executor/platform/default/dso_loader.cc:44] Successfully opened dynamic library libcublas.so.10.0
+2019-12-15 14:38:57.597174: I tensorflow/stream_executor/platform/default/dso_loader.cc:44] Successfully opened dynamic library libcufft.so.10.0
+2019-12-15 14:38:57.597822: I tensorflow/stream_executor/platform/default/dso_loader.cc:44] Successfully opened dynamic library libcurand.so.10.0
+2019-12-15 14:38:57.600342: I tensorflow/stream_executor/platform/default/dso_loader.cc:44] Successfully opened dynamic library libcusolver.so.10.0
+2019-12-15 14:38:57.602289: I tensorflow/stream_executor/platform/default/dso_loader.cc:44] Successfully opened dynamic library libcusparse.so.10.0
+2019-12-15 14:38:57.607434: I tensorflow/stream_executor/platform/default/dso_loader.cc:44] Successfully opened dynamic library libcudnn.so.7
+2019-12-15 14:38:57.609352: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1746] Adding visible gpu devices: 0
+2019-12-15 14:38:57.609749: I tensorflow/core/platform/cpu_feature_guard.cc:142] Your CPU supports instructions that this TensorFlow binary was not compiled to use: SSE4.1 SSE4.2 AVX AVX2 FMA
+2019-12-15 14:38:57.616163: I tensorflow/core/platform/profile_utils/cpu_utils.cc:94] CPU Frequency: 2400070000 Hz
+2019-12-15 14:38:57.616339: I tensorflow/compiler/xla/service/service.cc:168] XLA service 0x562708409cc0 initialized for platform Host (this does not guarantee that XLA will be used). Devices:
+2019-12-15 14:38:57.616357: I tensorflow/compiler/xla/service/service.cc:176]   StreamExecutor device (0): Host, Default Version
+2019-12-15 14:38:57.617377: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1618] Found device 0 with properties: 
+name: Tesla P100-PCIE-16GB major: 6 minor: 0 memoryClockRate(GHz): 1.3285
+pciBusID: 0000:83:00.0
+2019-12-15 14:38:57.617399: I tensorflow/stream_executor/platform/default/dso_loader.cc:44] Successfully opened dynamic library libcudart.so.10.0
+2019-12-15 14:38:57.617410: I tensorflow/stream_executor/platform/default/dso_loader.cc:44] Successfully opened dynamic library libcublas.so.10.0
+2019-12-15 14:38:57.617420: I tensorflow/stream_executor/platform/default/dso_loader.cc:44] Successfully opened dynamic library libcufft.so.10.0
+2019-12-15 14:38:57.617429: I tensorflow/stream_executor/platform/default/dso_loader.cc:44] Successfully opened dynamic library libcurand.so.10.0
+2019-12-15 14:38:57.617438: I tensorflow/stream_executor/platform/default/dso_loader.cc:44] Successfully opened dynamic library libcusolver.so.10.0
+2019-12-15 14:38:57.617448: I tensorflow/stream_executor/platform/default/dso_loader.cc:44] Successfully opened dynamic library libcusparse.so.10.0
+2019-12-15 14:38:57.617458: I tensorflow/stream_executor/platform/default/dso_loader.cc:44] Successfully opened dynamic library libcudnn.so.7
+2019-12-15 14:38:57.619436: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1746] Adding visible gpu devices: 0
+2019-12-15 14:38:57.619465: I tensorflow/stream_executor/platform/default/dso_loader.cc:44] Successfully opened dynamic library libcudart.so.10.0
+2019-12-15 14:38:57.716653: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1159] Device interconnect StreamExecutor with strength 1 edge matrix:
+2019-12-15 14:38:57.716686: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1165]      0 
+2019-12-15 14:38:57.716697: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1178] 0:   N 
+2019-12-15 14:38:57.719685: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1304] Created TensorFlow device (/job:localhost/replica:0/task:0/device:GPU:0 with 15216 MB memory) -> physical GPU (device: 0, name: Tesla P100-PCIE-16GB, pci bus id: 0000:83:00.0, compute capability: 6.0)
+2019-12-15 14:38:57.721797: I tensorflow/compiler/xla/service/service.cc:168] XLA service 0x562708a43110 initialized for platform CUDA (this does not guarantee that XLA will be used). Devices:
+2019-12-15 14:38:57.721814: I tensorflow/compiler/xla/service/service.cc:176]   StreamExecutor device (0): Tesla P100-PCIE-16GB, Compute Capability 6.0
+INFO   Y0_true: -9.4900e-01
+WARNING:tensorflow:From /home/dz4/DeepBSDE/solver.py:229: The name tf.placeholder is deprecated. Please use tf.compat.v1.placeholder instead.
+
+WARNING From /home/dz4/DeepBSDE/solver.py:229: The name tf.placeholder is deprecated. Please use tf.compat.v1.placeholder instead.
+
+WARNING:tensorflow:From /home/dz4/DeepBSDE/solver.py:234: The name tf.random_uniform is deprecated. Please use tf.random.uniform instead.
+
+WARNING From /home/dz4/DeepBSDE/solver.py:234: The name tf.random_uniform is deprecated. Please use tf.random.uniform instead.
+
+WARNING:tensorflow:From /home/dz4/DeepBSDE/solver.py:306: The name tf.variable_scope is deprecated. Please use tf.compat.v1.variable_scope instead.
+
+WARNING From /home/dz4/DeepBSDE/solver.py:306: The name tf.variable_scope is deprecated. Please use tf.compat.v1.variable_scope instead.
+
+WARNING:tensorflow:From /home/dz4/DeepBSDE/solver.py:312: calling reduce_sum_v1 (from tensorflow.python.ops.math_ops) with keep_dims is deprecated and will be removed in a future version.
+Instructions for updating:
+keep_dims is deprecated, use keepdims instead
+WARNING From /home/dz4/DeepBSDE/solver.py:312: calling reduce_sum_v1 (from tensorflow.python.ops.math_ops) with keep_dims is deprecated and will be removed in a future version.
+Instructions for updating:
+keep_dims is deprecated, use keepdims instead
+WARNING:tensorflow:From /home/dz4/DeepBSDE/solver.py:482: The name tf.get_variable is deprecated. Please use tf.compat.v1.get_variable instead.
+
+WARNING From /home/dz4/DeepBSDE/solver.py:482: The name tf.get_variable is deprecated. Please use tf.compat.v1.get_variable instead.
+
+WARNING:tensorflow:From /home/dz4/DeepBSDE/solver.py:484: calling RandomNormal.__init__ (from tensorflow.python.ops.init_ops) with dtype is deprecated and will be removed in a future version.
+Instructions for updating:
+Call initializer instance with the dtype argument instead of passing it to the constructor
+WARNING From /home/dz4/DeepBSDE/solver.py:484: calling RandomNormal.__init__ (from tensorflow.python.ops.init_ops) with dtype is deprecated and will be removed in a future version.
+Instructions for updating:
+Call initializer instance with the dtype argument instead of passing it to the constructor
+WARNING:tensorflow:From /home/dz4/DeepBSDE/solver.py:487: calling RandomUniform.__init__ (from tensorflow.python.ops.init_ops) with dtype is deprecated and will be removed in a future version.
+Instructions for updating:
+Call initializer instance with the dtype argument instead of passing it to the constructor
+WARNING From /home/dz4/DeepBSDE/solver.py:487: calling RandomUniform.__init__ (from tensorflow.python.ops.init_ops) with dtype is deprecated and will be removed in a future version.
+Instructions for updating:
+Call initializer instance with the dtype argument instead of passing it to the constructor
+WARNING:tensorflow:From /home/dz4/DeepBSDE/solver.py:489: calling Constant.__init__ (from tensorflow.python.ops.init_ops) with dtype is deprecated and will be removed in a future version.
+Instructions for updating:
+Call initializer instance with the dtype argument instead of passing it to the constructor
+WARNING From /home/dz4/DeepBSDE/solver.py:489: calling Constant.__init__ (from tensorflow.python.ops.init_ops) with dtype is deprecated and will be removed in a future version.
+Instructions for updating:
+Call initializer instance with the dtype argument instead of passing it to the constructor
+WARNING:tensorflow:From /home/dz4/DeepBSDE/solver.py:325: where (from tensorflow.python.ops.array_ops) is deprecated and will be removed in a future version.
+Instructions for updating:
+Use tf.where in 2.0, which has the same broadcast rule as np.where
+WARNING From /home/dz4/DeepBSDE/solver.py:325: where (from tensorflow.python.ops.array_ops) is deprecated and will be removed in a future version.
+Instructions for updating:
+Use tf.where in 2.0, which has the same broadcast rule as np.where
+WARNING:tensorflow:From /home/dz4/DeepBSDE/solver.py:332: The name tf.train.piecewise_constant is deprecated. Please use tf.compat.v1.train.piecewise_constant instead.
+
+WARNING From /home/dz4/DeepBSDE/solver.py:332: The name tf.train.piecewise_constant is deprecated. Please use tf.compat.v1.train.piecewise_constant instead.
+
+WARNING:tensorflow:From /home/dz4/DeepBSDE/solver.py:335: The name tf.trainable_variables is deprecated. Please use tf.compat.v1.trainable_variables instead.
+
+WARNING From /home/dz4/DeepBSDE/solver.py:335: The name tf.trainable_variables is deprecated. Please use tf.compat.v1.trainable_variables instead.
+
+WARNING:tensorflow:From /home/dz4/DeepBSDE/solver.py:337: The name tf.train.AdamOptimizer is deprecated. Please use tf.compat.v1.train.AdamOptimizer instead.
+
+WARNING From /home/dz4/DeepBSDE/solver.py:337: The name tf.train.AdamOptimizer is deprecated. Please use tf.compat.v1.train.AdamOptimizer instead.
+
+WARNING:tensorflow:From /home/dz4/DeepBSDE/solver.py:192: The name tf.global_variables_initializer is deprecated. Please use tf.compat.v1.global_variables_initializer instead.
+
+WARNING From /home/dz4/DeepBSDE/solver.py:192: The name tf.global_variables_initializer is deprecated. Please use tf.compat.v1.global_variables_initializer instead.
+
+2019-12-15 14:40:08.235010: I tensorflow/stream_executor/platform/default/dso_loader.cc:44] Successfully opened dynamic library libcublas.so.10.0
+INFO   step:     0,    loss: 6.7936e+01,   Y0: 2.1713e+00,  elapsed time  70
+INFO   step:     1,    loss: 2.6077e+01,   Y0: 2.1763e+00,  elapsed time 109
+INFO   step:     2,    loss: 2.6070e+01,   Y0: 2.1813e+00,  elapsed time 114
+INFO   step:     3,    loss: 2.6064e+01,   Y0: 2.1857e+00,  elapsed time 119
+INFO   step:     4,    loss: 2.6060e+01,   Y0: 2.1903e+00,  elapsed time 124
+INFO   step:     5,    loss: 2.6056e+01,   Y0: 2.1951e+00,  elapsed time 129
+INFO   step:     6,    loss: 2.6051e+01,   Y0: 2.1994e+00,  elapsed time 135
+INFO   step:     7,    loss: 2.6044e+01,   Y0: 2.2039e+00,  elapsed time 140
+INFO   step:     8,    loss: 2.6039e+01,   Y0: 2.2085e+00,  elapsed time 145
+INFO   step:     9,    loss: 2.6035e+01,   Y0: 2.2128e+00,  elapsed time 150
+INFO   step:    10,    loss: 2.6032e+01,   Y0: 2.2173e+00,  elapsed time 155
+INFO   step:    11,    loss: 2.6029e+01,   Y0: 2.2219e+00,  elapsed time 160
+INFO   step:    12,    loss: 2.6026e+01,   Y0: 2.2265e+00,  elapsed time 166
+INFO   step:    13,    loss: 2.6022e+01,   Y0: 2.2308e+00,  elapsed time 171
+INFO   step:    14,    loss: 2.6017e+01,   Y0: 2.2350e+00,  elapsed time 176
+INFO   step:    15,    loss: 2.6014e+01,   Y0: 2.2393e+00,  elapsed time 181
+INFO   step:    16,    loss: 2.6010e+01,   Y0: 2.2437e+00,  elapsed time 186
+INFO   step:    17,    loss: 2.6005e+01,   Y0: 2.2478e+00,  elapsed time 191
+INFO   step:    18,    loss: 2.6000e+01,   Y0: 2.2517e+00,  elapsed time 195
+INFO   step:    19,    loss: 2.5995e+01,   Y0: 2.2554e+00,  elapsed time 200
+INFO   step:    20,    loss: 2.5990e+01,   Y0: 2.2592e+00,  elapsed time 205
+INFO   step:    21,    loss: 2.5986e+01,   Y0: 2.2625e+00,  elapsed time 210
+INFO   step:    22,    loss: 2.5983e+01,   Y0: 2.2660e+00,  elapsed time 215
+INFO   step:    23,    loss: 2.5980e+01,   Y0: 2.2693e+00,  elapsed time 219
+INFO   step:    24,    loss: 2.5976e+01,   Y0: 2.2722e+00,  elapsed time 224
+INFO   step:    25,    loss: 2.5972e+01,   Y0: 2.2752e+00,  elapsed time 228
+INFO   step:    26,    loss: 2.5968e+01,   Y0: 2.2784e+00,  elapsed time 233
+INFO   step:    27,    loss: 2.5965e+01,   Y0: 2.2812e+00,  elapsed time 237
+INFO   step:    28,    loss: 2.5962e+01,   Y0: 2.2833e+00,  elapsed time 242
+INFO   step:    29,    loss: 2.5960e+01,   Y0: 2.2858e+00,  elapsed time 247
+INFO   step:    30,    loss: 2.5957e+01,   Y0: 2.2876e+00,  elapsed time 252
+INFO   step:    31,    loss: 2.5954e+01,   Y0: 2.2895e+00,  elapsed time 256
+INFO   step:    32,    loss: 2.5952e+01,   Y0: 2.2913e+00,  elapsed time 261
+INFO   step:    33,    loss: 2.5948e+01,   Y0: 2.2927e+00,  elapsed time 266
+INFO   step:    34,    loss: 2.5945e+01,   Y0: 2.2943e+00,  elapsed time 270
+INFO   step:    35,    loss: 2.5941e+01,   Y0: 2.2960e+00,  elapsed time 275
+INFO   step:    36,    loss: 2.5937e+01,   Y0: 2.2983e+00,  elapsed time 280
+INFO   step:    37,    loss: 2.5935e+01,   Y0: 2.3008e+00,  elapsed time 284
+INFO   step:    38,    loss: 2.5933e+01,   Y0: 2.3034e+00,  elapsed time 289
+INFO   step:    39,    loss: 2.5931e+01,   Y0: 2.3065e+00,  elapsed time 294
+INFO   step:    40,    loss: 2.5929e+01,   Y0: 2.3094e+00,  elapsed time 299
+INFO   step:    41,    loss: 2.5925e+01,   Y0: 2.3115e+00,  elapsed time 304
+INFO   step:    42,    loss: 2.5921e+01,   Y0: 2.3137e+00,  elapsed time 308
+INFO   step:    43,    loss: 2.5917e+01,   Y0: 2.3159e+00,  elapsed time 313
+INFO   step:    44,    loss: 2.5914e+01,   Y0: 2.3173e+00,  elapsed time 318
+INFO   step:    45,    loss: 2.5911e+01,   Y0: 2.3189e+00,  elapsed time 322
+INFO   step:    46,    loss: 2.5908e+01,   Y0: 2.3200e+00,  elapsed time 326
+INFO   step:    47,    loss: 2.5905e+01,   Y0: 2.3211e+00,  elapsed time 331
+INFO   step:    48,    loss: 2.5902e+01,   Y0: 2.3221e+00,  elapsed time 335
+INFO   step:    49,    loss: 2.5899e+01,   Y0: 2.3232e+00,  elapsed time 339
+INFO   step:    50,    loss: 2.5897e+01,   Y0: 2.3244e+00,  elapsed time 344
+INFO   step:    51,    loss: 2.5895e+01,   Y0: 2.3258e+00,  elapsed time 348
+INFO   step:    52,    loss: 2.5892e+01,   Y0: 2.3271e+00,  elapsed time 353
+INFO   step:    53,    loss: 2.5890e+01,   Y0: 2.3282e+00,  elapsed time 357
+INFO   step:    54,    loss: 2.5888e+01,   Y0: 2.3291e+00,  elapsed time 362
+INFO   step:    55,    loss: 2.5885e+01,   Y0: 2.3298e+00,  elapsed time 366
+INFO   step:    56,    loss: 2.5882e+01,   Y0: 2.3301e+00,  elapsed time 371
+INFO   step:    57,    loss: 2.5879e+01,   Y0: 2.3300e+00,  elapsed time 375
+INFO   step:    58,    loss: 2.5877e+01,   Y0: 2.3291e+00,  elapsed time 380
+INFO   step:    59,    loss: 2.5874e+01,   Y0: 2.3279e+00,  elapsed time 384
+INFO   step:    60,    loss: 2.5870e+01,   Y0: 2.3271e+00,  elapsed time 389
+INFO   step:    61,    loss: 2.5866e+01,   Y0: 2.3258e+00,  elapsed time 393
+INFO   step:    62,    loss: 2.5863e+01,   Y0: 2.3248e+00,  elapsed time 397
+INFO   step:    63,    loss: 2.5860e+01,   Y0: 2.3239e+00,  elapsed time 402
+INFO   step:    64,    loss: 2.5856e+01,   Y0: 2.3228e+00,  elapsed time 406
+INFO   step:    65,    loss: 2.5852e+01,   Y0: 2.3215e+00,  elapsed time 411
+INFO   step:    66,    loss: 2.5849e+01,   Y0: 2.3202e+00,  elapsed time 415
+INFO   step:    67,    loss: 2.5845e+01,   Y0: 2.3184e+00,  elapsed time 420
+INFO   step:    68,    loss: 2.5842e+01,   Y0: 2.3167e+00,  elapsed time 424
+INFO   step:    69,    loss: 2.5839e+01,   Y0: 2.3150e+00,  elapsed time 429
+INFO   step:    70,    loss: 2.5835e+01,   Y0: 2.3136e+00,  elapsed time 433
+INFO   step:    71,    loss: 2.5832e+01,   Y0: 2.3123e+00,  elapsed time 437
+INFO   step:    72,    loss: 2.5828e+01,   Y0: 2.3117e+00,  elapsed time 441
+INFO   step:    73,    loss: 2.5825e+01,   Y0: 2.3112e+00,  elapsed time 446
+INFO   step:    74,    loss: 2.5821e+01,   Y0: 2.3107e+00,  elapsed time 450
+INFO   step:    75,    loss: 2.5816e+01,   Y0: 2.3109e+00,  elapsed time 454
+INFO   step:    76,    loss: 2.5812e+01,   Y0: 2.3114e+00,  elapsed time 459
+INFO   step:    77,    loss: 2.5807e+01,   Y0: 2.3119e+00,  elapsed time 463
+INFO   step:    78,    loss: 2.5803e+01,   Y0: 2.3123e+00,  elapsed time 467
+INFO   step:    79,    loss: 2.5798e+01,   Y0: 2.3125e+00,  elapsed time 471
+INFO   step:    80,    loss: 2.5794e+01,   Y0: 2.3132e+00,  elapsed time 476
+INFO   step:    81,    loss: 2.5790e+01,   Y0: 2.3135e+00,  elapsed time 480
+INFO   step:    82,    loss: 2.5786e+01,   Y0: 2.3134e+00,  elapsed time 484
+INFO   step:    83,    loss: 2.5782e+01,   Y0: 2.3126e+00,  elapsed time 489
+INFO   step:    84,    loss: 2.5778e+01,   Y0: 2.3122e+00,  elapsed time 493
+INFO   step:    85,    loss: 2.5774e+01,   Y0: 2.3119e+00,  elapsed time 498
+INFO   step:    86,    loss: 2.5771e+01,   Y0: 2.3115e+00,  elapsed time 503
+INFO   step:    87,    loss: 2.5766e+01,   Y0: 2.3107e+00,  elapsed time 507
+INFO   step:    88,    loss: 2.5762e+01,   Y0: 2.3095e+00,  elapsed time 511
+INFO   step:    89,    loss: 2.5758e+01,   Y0: 2.3080e+00,  elapsed time 516
+INFO   step:    90,    loss: 2.5753e+01,   Y0: 2.3077e+00,  elapsed time 520
+INFO   step:    91,    loss: 2.5749e+01,   Y0: 2.3077e+00,  elapsed time 525
+INFO   step:    92,    loss: 2.5745e+01,   Y0: 2.3076e+00,  elapsed time 529
+INFO   step:    93,    loss: 2.5741e+01,   Y0: 2.3074e+00,  elapsed time 534
+INFO   step:    94,    loss: 2.5737e+01,   Y0: 2.3068e+00,  elapsed time 538
+INFO   step:    95,    loss: 2.5734e+01,   Y0: 2.3055e+00,  elapsed time 543
+INFO   step:    96,    loss: 2.5730e+01,   Y0: 2.3046e+00,  elapsed time 547
+INFO   step:    97,    loss: 2.5727e+01,   Y0: 2.3039e+00,  elapsed time 552
+INFO   step:    98,    loss: 2.5724e+01,   Y0: 2.3032e+00,  elapsed time 556
+INFO   step:    99,    loss: 2.5721e+01,   Y0: 2.3036e+00,  elapsed time 560
+INFO   step:   100,    loss: 2.5718e+01,   Y0: 2.3041e+00,  elapsed time 565
+INFO   step:   101,    loss: 2.5714e+01,   Y0: 2.3045e+00,  elapsed time 569
+INFO   step:   102,    loss: 2.5712e+01,   Y0: 2.3053e+00,  elapsed time 573
+INFO   step:   103,    loss: 2.5709e+01,   Y0: 2.3063e+00,  elapsed time 578
+INFO   step:   104,    loss: 2.5706e+01,   Y0: 2.3071e+00,  elapsed time 582
+INFO   step:   105,    loss: 2.5704e+01,   Y0: 2.3076e+00,  elapsed time 587
+INFO   step:   106,    loss: 2.5701e+01,   Y0: 2.3086e+00,  elapsed time 591
+INFO   step:   107,    loss: 2.5698e+01,   Y0: 2.3098e+00,  elapsed time 595
+INFO   step:   108,    loss: 2.5696e+01,   Y0: 2.3108e+00,  elapsed time 599
+INFO   step:   109,    loss: 2.5693e+01,   Y0: 2.3114e+00,  elapsed time 604
+INFO   step:   110,    loss: 2.5690e+01,   Y0: 2.3117e+00,  elapsed time 608
+INFO   step:   111,    loss: 2.5688e+01,   Y0: 2.3120e+00,  elapsed time 613
+INFO   step:   112,    loss: 2.5685e+01,   Y0: 2.3128e+00,  elapsed time 617
+INFO   step:   113,    loss: 2.5682e+01,   Y0: 2.3136e+00,  elapsed time 622
+INFO   step:   114,    loss: 2.5679e+01,   Y0: 2.3144e+00,  elapsed time 626
+INFO   step:   115,    loss: 2.5676e+01,   Y0: 2.3152e+00,  elapsed time 630
+INFO   step:   116,    loss: 2.5673e+01,   Y0: 2.3157e+00,  elapsed time 635
+INFO   step:   117,    loss: 2.5669e+01,   Y0: 2.3161e+00,  elapsed time 639
+INFO   step:   118,    loss: 2.5666e+01,   Y0: 2.3167e+00,  elapsed time 643
+INFO   step:   119,    loss: 2.5662e+01,   Y0: 2.3172e+00,  elapsed time 648
+INFO   step:   120,    loss: 2.5658e+01,   Y0: 2.3167e+00,  elapsed time 652
+INFO   step:   121,    loss: 2.5654e+01,   Y0: 2.3168e+00,  elapsed time 657
+INFO   step:   122,    loss: 2.5650e+01,   Y0: 2.3164e+00,  elapsed time 661
+INFO   step:   123,    loss: 2.5648e+01,   Y0: 2.3156e+00,  elapsed time 666
+INFO   step:   124,    loss: 2.5646e+01,   Y0: 2.3143e+00,  elapsed time 670
+INFO   step:   125,    loss: 2.5643e+01,   Y0: 2.3130e+00,  elapsed time 674
+INFO   step:   126,    loss: 2.5641e+01,   Y0: 2.3121e+00,  elapsed time 678
+INFO   step:   127,    loss: 2.5638e+01,   Y0: 2.3115e+00,  elapsed time 683
+INFO   step:   128,    loss: 2.5634e+01,   Y0: 2.3106e+00,  elapsed time 687
+INFO   step:   129,    loss: 2.5629e+01,   Y0: 2.3096e+00,  elapsed time 692
+INFO   step:   130,    loss: 2.5624e+01,   Y0: 2.3094e+00,  elapsed time 696
+INFO   step:   131,    loss: 2.5619e+01,   Y0: 2.3087e+00,  elapsed time 701
+INFO   step:   132,    loss: 2.5613e+01,   Y0: 2.3086e+00,  elapsed time 705
+INFO   step:   133,    loss: 2.5608e+01,   Y0: 2.3077e+00,  elapsed time 709
+INFO   step:   134,    loss: 2.5603e+01,   Y0: 2.3071e+00,  elapsed time 714
+INFO   step:   135,    loss: 2.5599e+01,   Y0: 2.3064e+00,  elapsed time 718
+INFO   step:   136,    loss: 2.5594e+01,   Y0: 2.3060e+00,  elapsed time 723
+INFO   step:   137,    loss: 2.5590e+01,   Y0: 2.3056e+00,  elapsed time 727
+INFO   step:   138,    loss: 2.5586e+01,   Y0: 2.3049e+00,  elapsed time 732
+INFO   step:   139,    loss: 2.5582e+01,   Y0: 2.3045e+00,  elapsed time 736
+INFO   step:   140,    loss: 2.5577e+01,   Y0: 2.3042e+00,  elapsed time 740
+INFO   step:   141,    loss: 2.5573e+01,   Y0: 2.3045e+00,  elapsed time 745
+INFO   step:   142,    loss: 2.5570e+01,   Y0: 2.3046e+00,  elapsed time 749
+INFO   step:   143,    loss: 2.5567e+01,   Y0: 2.3045e+00,  elapsed time 754
+INFO   step:   144,    loss: 2.5563e+01,   Y0: 2.3046e+00,  elapsed time 758
+INFO   step:   145,    loss: 2.5559e+01,   Y0: 2.3049e+00,  elapsed time 763
+INFO   step:   146,    loss: 2.5554e+01,   Y0: 2.3051e+00,  elapsed time 767
+INFO   step:   147,    loss: 2.5550e+01,   Y0: 2.3047e+00,  elapsed time 772
+INFO   step:   148,    loss: 2.5545e+01,   Y0: 2.3046e+00,  elapsed time 776
+INFO   step:   149,    loss: 2.5542e+01,   Y0: 2.3053e+00,  elapsed time 780
+Delta:  100 ,  100.05
+Other1:  -10.05 ,  -10
+Other2:  -10.05 ,  -10
+all_one_vec:  Tensor("ones:0", shape=(?, 1), dtype=float64)
+y:  Tensor("mul:0", shape=(?, 1), dtype=float64)
+z output:  [<tf.Tensor 'MatMul:0' shape=(?, 3) dtype=float64>, <tf.Tensor 'MatMul_1:0' shape=(?, 3) dtype=float64>, <tf.Tensor 'MatMul_2:0' shape=(?, 3) dtype=float64>, <tf.Tensor 'MatMul_3:0' shape=(?, 3) dtype=float64>, <tf.Tensor 'MatMul_4:0' shape=(?, 3) dtype=float64>, <tf.Tensor 'MatMul_5:0' shape=(?, 3) dtype=float64>, <tf.Tensor 'MatMul_6:0' shape=(?, 3) dtype=float64>, <tf.Tensor 'MatMul_7:0' shape=(?, 3) dtype=float64>, <tf.Tensor 'MatMul_8:0' shape=(?, 3) dtype=float64>, <tf.Tensor 'MatMul_9:0' shape=(?, 3) dtype=float64>, <tf.Tensor 'MatMul_10:0' shape=(?, 3) dtype=float64>, <tf.Tensor 'MatMul_11:0' shape=(?, 3) dtype=float64>, <tf.Tensor 'MatMul_12:0' shape=(?, 3) dtype=float64>, <tf.Tensor 'MatMul_13:0' shape=(?, 3) dtype=float64>, <tf.Tensor 'MatMul_14:0' shape=(?, 3) dtype=float64>, <tf.Tensor 'MatMul_15:0' shape=(?, 3) dtype=float64>, <tf.Tensor 'MatMul_16:0' shape=(?, 3) dtype=float64>, <tf.Tensor 'MatMul_17:0' shape=(?, 3) dtype=float64>, <tf.Tensor 'MatMul_18:0' shape=(?, 3) dtype=float64>, <tf.Tensor 'MatMul_19:0' shape=(?, 3) dtype=float64>, <tf.Tensor 'MatMul_20:0' shape=(?, 3) dtype=float64>, <tf.Tensor 'MatMul_21:0' shape=(?, 3) dtype=float64>, <tf.Tensor 'MatMul_22:0' shape=(?, 3) dtype=float64>, <tf.Tensor 'MatMul_23:0' shape=(?, 3) dtype=float64>, <tf.Tensor 'MatMul_24:0' shape=(?, 3) dtype=float64>, <tf.Tensor 'MatMul_25:0' shape=(?, 3) dtype=float64>, <tf.Tensor 'MatMul_26:0' shape=(?, 3) dtype=float64>, <tf.Tensor 'MatMul_27:0' shape=(?, 3) dtype=float64>, <tf.Tensor 'MatMul_28:0' shape=(?, 3) dtype=float64>, <tf.Tensor 'MatMul_29:0' shape=(?, 3) dtype=float64>, <tf.Tensor 'MatMul_30:0' shape=(?, 3) dtype=float64>, <tf.Tensor 'MatMul_31:0' shape=(?, 3) dtype=float64>, <tf.Tensor 'MatMul_32:0' shape=(?, 3) dtype=float64>, <tf.Tensor 'MatMul_33:0' shape=(?, 3) dtype=float64>, <tf.Tensor 'MatMul_34:0' shape=(?, 3) dtype=float64>, <tf.Tensor 'MatMul_35:0' shape=(?, 3) dtype=float64>, <tf.Tensor 'MatMul_36:0' shape=(?, 3) dtype=float64>, <tf.Tensor 'MatMul_37:0' shape=(?, 3) dtype=float64>, <tf.Tensor 'MatMul_38:0' shape=(?, 3) dtype=float64>, <tf.Tensor 'MatMul_39:0' shape=(?, 3) dtype=float64>, <tf.Tensor 'MatMul_40:0' shape=(?, 3) dtype=float64>, <tf.Tensor 'MatMul_41:0' shape=(?, 3) dtype=float64>, <tf.Tensor 'MatMul_42:0' shape=(?, 3) dtype=float64>, <tf.Tensor 'MatMul_43:0' shape=(?, 3) dtype=float64>, <tf.Tensor 'MatMul_44:0' shape=(?, 3) dtype=float64>, <tf.Tensor 'MatMul_45:0' shape=(?, 3) dtype=float64>, <tf.Tensor 'MatMul_46:0' shape=(?, 3) dtype=float64>, <tf.Tensor 'MatMul_47:0' shape=(?, 3) dtype=float64>, <tf.Tensor 'MatMul_48:0' shape=(?, 3) dtype=float64>, <tf.Tensor 'MatMul_49:0' shape=(?, 3) dtype=float64>, <tf.Tensor 'MatMul_50:0' shape=(?, 3) dtype=float64>, <tf.Tensor 'MatMul_51:0' shape=(?, 3) dtype=float64>, <tf.Tensor 'MatMul_52:0' shape=(?, 3) dtype=float64>, <tf.Tensor 'MatMul_53:0' shape=(?, 3) dtype=float64>, <tf.Tensor 'MatMul_54:0' shape=(?, 3) dtype=float64>, <tf.Tensor 'MatMul_55:0' shape=(?, 3) dtype=float64>, <tf.Tensor 'MatMul_56:0' shape=(?, 3) dtype=float64>, <tf.Tensor 'MatMul_57:0' shape=(?, 3) dtype=float64>, <tf.Tensor 'MatMul_58:0' shape=(?, 3) dtype=float64>, <tf.Tensor 'MatMul_59:0' shape=(?, 3) dtype=float64>, <tf.Tensor 'MatMul_60:0' shape=(?, 3) dtype=float64>, <tf.Tensor 'MatMul_61:0' shape=(?, 3) dtype=float64>, <tf.Tensor 'MatMul_62:0' shape=(?, 3) dtype=float64>, <tf.Tensor 'MatMul_63:0' shape=(?, 3) dtype=float64>, <tf.Tensor 'MatMul_64:0' shape=(?, 3) dtype=float64>, <tf.Tensor 'MatMul_65:0' shape=(?, 3) dtype=float64>, <tf.Tensor 'MatMul_66:0' shape=(?, 3) dtype=float64>, <tf.Tensor 'MatMul_67:0' shape=(?, 3) dtype=float64>, <tf.Tensor 'MatMul_68:0' shape=(?, 3) dtype=float64>, <tf.Tensor 'MatMul_69:0' shape=(?, 3) dtype=float64>, <tf.Tensor 'MatMul_70:0' shape=(?, 3) dtype=float64>, <tf.Tensor 'MatMul_71:0' shape=(?, 3) dtype=float64>, <tf.Tensor 'MatMul_72:0' shape=(?, 3) dtype=float64>, <tf.Tensor 'MatMul_73:0' shape=(?, 3) dtype=float64>, <tf.Tensor 'MatMul_74:0' shape=(?, 3) dtype=float64>, <tf.Tensor 'MatMul_75:0' shape=(?, 3) dtype=float64>, <tf.Tensor 'MatMul_76:0' shape=(?, 3) dtype=float64>, <tf.Tensor 'MatMul_77:0' shape=(?, 3) dtype=float64>, <tf.Tensor 'MatMul_78:0' shape=(?, 3) dtype=float64>, <tf.Tensor 'MatMul_79:0' shape=(?, 3) dtype=float64>]
+num_iterations:  150
+total time intervals:  80
+# of dimensions:  3

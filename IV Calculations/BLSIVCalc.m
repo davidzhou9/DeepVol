@@ -12,9 +12,6 @@ for col = 1:size(mat, 2)
     end
 end
 
-%% Normalize
-
-%normalized_IV = normalize(tempVal, 1);
 %% Create Average IV map
 
 averaged_IVs = mean(tempVal, 1);
@@ -57,52 +54,62 @@ figure
 %%
 
 scatter(score_FixM30(:, 1), score_FixM30(:, 2), 20, 'blue', 'filled')
+title('PCA for T = 30, Projection onto First Two PCs')
 xlabel('1st PC')
 ylabel('2nd PC')
 figure
 
 scatter(score_FixM60(:, 1), score_FixM60(:, 2), 20, 'blue', 'filled')
+title('PCA for T = 60, Projection onto First Two PCs')
 xlabel('1st PC')
 ylabel('2nd PC')
 figure
 
 scatter(score_FixM90(:, 1), score_FixM90(:, 2), 20, 'blue', 'filled')
+title('PCA for T = 90, Projection onto First Two PCs')
 xlabel('1st PC')
 ylabel('2nd PC')
 figure
 
 scatter(score_FixM180(:, 1), score_FixM180(:, 2), 20, 'blue', 'filled')
+title('PCA for T = 180, Projection onto First Two PCs')
 xlabel('1st PC')
 ylabel('2nd PC')
 figure
 
 scatter(score_FixM270(:, 1), score_FixM270(:, 2), 20, 'blue', 'filled')
+title('PCA for T = 270, Projection onto First Two PCs')
 xlabel('1st PC')
 ylabel('2nd PC')
 figure
 
 %%
 scatter(score_FixK90(:, 1), score_FixK90(:, 2), 20, 'blue', 'filled')
+title('PCA for K = 90, Projection onto First Two PCs')
 xlabel('1st PC')
 ylabel('2nd PC')
 figure
 
 scatter(score_FixK95(:, 1), score_FixK95(:, 2), 20, 'blue', 'filled')
+title('PCA for K = 95, Projection onto First Two PCs')
 xlabel('1st PC')
 ylabel('2nd PC')
 figure
 
 scatter(score_FixK100(:, 1), score_FixK100(:, 2), 20, 'blue', 'filled')
+title('PCA for K = 100, Projection onto First Two PCs')
 xlabel('1st PC')
 ylabel('2nd PC')
 figure
 
 scatter(score_FixK105(:, 1), score_FixK105(:, 2), 20, 'blue', 'filled')
+title('PCA for K = 105, Projection onto First Two PCs')
 xlabel('1st PC')
 ylabel('2nd PC')
 figure
 
 scatter(score_FixK110(:, 1), score_FixK110(:, 2), 20, 'blue', 'filled')
+title('PCA for K = 110, Projection onto First Two PCs')
 xlabel('1st PC')
 ylabel('2nd PC')
 figure

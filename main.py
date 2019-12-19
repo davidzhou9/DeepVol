@@ -85,9 +85,9 @@ def main():
                        header="target_value",
                        comments='')
     
-    """
     
-
+    
+    """
     for idx_run in range(1, 2):
         tf.reset_default_graph()
         with tf.Session() as sess:
@@ -110,6 +110,7 @@ def main():
             while os.path.exists('{}_training_history_FORPL_{}_{}.csv'.format(path_prefix, idx_run, num_Iter)):
                 num_Iter += 1
             
+            #training_history = np.append(training_history, bsde._total_time)
             np.savetxt('{}_training_history_FORPL_{}_{}.csv'.format(path_prefix, idx_run, num_Iter),
                        training_history,
                        fmt=['%d', '%.5e', '%.5e', '%d'],
@@ -118,13 +119,19 @@ def main():
                        comments='')
         
             output = model.test()
-            np.savetxt('{}_PLfigures.csv'.format(path_prefix, idx_run),
+            
+            num_Iter = 1
+            while os.path.exists('{}_PLfigures_{}.csv'.format(path_prefix, num_Iter)):
+                num_Iter += 1
+                
+            output = np.append(output, bsde._num_time_interval)
+            np.savetxt('{}_PLfigures_{}.csv'.format(path_prefix, num_Iter),
                        output,
                        fmt=['%f'],
                        delimiter=",",
                        header="PL",
                        comments='')
-
+     
 
 if __name__ == '__main__':
     main()

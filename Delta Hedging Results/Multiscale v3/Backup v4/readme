@@ -1,0 +1,1 @@
+Changes to the diffusion matrix. However, bug on number of time intervals iterated over in delta hedging scheme and using "alpha" instead of "alpha_revert"
