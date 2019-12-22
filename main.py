@@ -50,7 +50,7 @@ def main():
 
     # for just pricing
     
-    """
+    
     vals = np.array([])
 
     for idx_run in range(1, 51):
@@ -131,7 +131,7 @@ def main():
                        delimiter=",",
                        header="PL",
                        comments='')
-     
+    """ 
 
 if __name__ == '__main__':
     main()

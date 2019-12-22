@@ -68,13 +68,13 @@ class PricingOptionOneFactorConfig(Config):
     
 class PricingOptionMultiFactorConfig(Config):
     dim = 3
-    total_time = 0.1
+    total_time = 30/252
     num_time_interval = 80
     lr_values = list(np.array([5e-3, 5e-3]))
     lr_boundaries = [2000]
     num_iterations = 150
     num_hiddens = [dim, 5, 5, dim]
-    y_init_range = [2.3, 2.7]
+    y_init_range = [10.5, 10.9]
 
 class PricingDefaultRiskConfig(Config):
     dim = 100

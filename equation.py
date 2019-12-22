@@ -311,21 +311,21 @@ class PricingOptionMultiFactor(Equation):
         super(PricingOptionMultiFactor, self).__init__(dim, total_time, num_time_interval)
         self._num_assets = 1
         self._x_init = np.ones(self._num_assets) * 100
-        self._y_init = np.ones(self._num_assets) * -1
-        self._z_init = np.ones(self._num_assets) * -1
+        self._y_init = np.ones(self._num_assets) * -0.949
+        self._z_init = np.ones(self._num_assets) * -0.949
         self._r = 0.05
         
         # correlation parameters
-        self._rho_1 = -0.2
-        self._rho_2 = -0.2
-        self._rho_12 = 0 # change when maturity changes
+        self._rho_1 = -0.5
+        self._rho_2 = -0.5
+        self._rho_12 = 0.1769 # change when maturity changes
         
         # reversion rate parameters
         self._alpha_revert = 20
         self._delta = 0.1
         
-        self._mf = -0.8
-        self._ms = -0.8
+        self._mf = -1.3
+        self._ms = -1.0
     
         self._vov_f = 0.5
         self._vov_s = 0.8

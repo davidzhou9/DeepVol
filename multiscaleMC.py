@@ -22,9 +22,9 @@ num_time_interval = 80
 delta_t = total_Time / num_time_interval
         
 # correlation parameters
-rho_1 = -0.2
-rho_2 = -0.2
-rho_12 = -0.146 # CHANGE EVERYTIME
+rho_1 = -0.5
+rho_2 = -0.5
+rho_12 = 0.2730 # CHANGE EVERYTIME
         
 # reversion rate parameters
 alpha_revert = 20

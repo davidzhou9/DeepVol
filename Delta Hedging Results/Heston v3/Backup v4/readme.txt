@@ -1,1 +1,0 @@
-Issue with the iteration scheme on delta hedging.
