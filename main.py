@@ -48,12 +48,41 @@ def main():
     # 3) Build the Model
     # 4) Train the model
 
-    # for just pricing
+
+
+    # normal pricing
+    """
+    for idx_run in range(1, 2):
+        tf.reset_default_graph()
+        with tf.Session() as sess:
+            #logging.info('Begin to solve %s with run %d' % (problem_name, idx_run))
+            
+            ###### IMPORTANT ######
+            model = FeedForwardModel(config, bsde, sess, problem_name) # create the feed forward model
+            if bsde.y_init:
+                logging.info('Y0_true: %.4e' % bsde.y_init)
+            model.build() # bulid the model
+            training_history = model.train() # trin the model
+            #if bsde.y_init:
+                #logging.info('relative error of Y0: %s',
+                #             '{:.2%}'.format(
+                #                 abs(bsde.y_init - training_history[-1, 2])/bsde.y_init))
+            
+            # save training history
+            np.savetxt('{}_training_history_{}.csv'.format(path_prefix, idx_run),
+                       training_history,
+                       fmt=['%d', '%.5e', '%.5e', '%d'],
+                       delimiter=",",
+                       header="step,loss_function,target_value,elapsed_time",
+                       comments='')
     
+    """
+    # for just IV Pricing
     
+    """
     vals = np.array([])
 
-    for idx_run in range(1, 51):
+    for idx_run in range(1, 3):
         tf.reset_default_graph()
         with tf.Session() as sess:
             #logging.info('Begin to solve %s with run %d' % (problem_name, idx_run))
@@ -85,9 +114,12 @@ def main():
                        header="target_value",
                        comments='')
     
-    
-    
     """
+    
+    
+    
+    ### FOR JUST DELTA HEDGING / CALCULATING PORTFOLIOS
+    
     for idx_run in range(1, 2):
         tf.reset_default_graph()
         with tf.Session() as sess:
@@ -95,8 +127,8 @@ def main():
             
             ###### IMPORTANT ######
             model = FeedForwardModel(config, bsde, sess, problem_name) # create the feed forward model
-            if bsde.y_init:
-                logging.info('Y0_true: %.4e' % bsde.y_init)
+            #if bsde.y_init:
+            #    logging.info('Y0_true: %.4e' % bsde.y_init)
             model.build() # bulid the model
             training_history = model.train() # trin the model
             #if bsde.y_init:
@@ -107,31 +139,31 @@ def main():
             
             
             num_Iter = 1
-            while os.path.exists('{}_training_history_FORPL_{}_{}.csv'.format(path_prefix, idx_run, num_Iter)):
+            while os.path.exists('{}_training_history_{}_{}.csv'.format(path_prefix, idx_run, num_Iter)):
                 num_Iter += 1
             
             #training_history = np.append(training_history, bsde._total_time)
-            np.savetxt('{}_training_history_FORPL_{}_{}.csv'.format(path_prefix, idx_run, num_Iter),
+            np.savetxt('{}_training_history_{}_{}.csv'.format(path_prefix, idx_run, num_Iter),
                        training_history,
                        fmt=['%d', '%.5e', '%.5e', '%d'],
                        delimiter=",",
                        header="step,loss_function,target_value,elapsed_time",
                        comments='')
-        
-            output = model.test()
+
+            output = model.calcPortfolioStrategyMS()
             
             num_Iter = 1
-            while os.path.exists('{}_PLfigures_{}.csv'.format(path_prefix, num_Iter)):
+            while os.path.exists('{}_Strat_{}.csv'.format(path_prefix, num_Iter)):
                 num_Iter += 1
                 
             output = np.append(output, bsde._num_time_interval)
-            np.savetxt('{}_PLfigures_{}.csv'.format(path_prefix, num_Iter),
+            np.savetxt('{}_Strat_{}.csv'.format(path_prefix, num_Iter),
                        output,
                        fmt=['%f'],
                        delimiter=",",
-                       header="PL",
+                       header="Delta",
                        comments='')
-    """ 
+
 
 if __name__ == '__main__':
     main()

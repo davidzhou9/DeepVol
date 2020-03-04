@@ -12,35 +12,36 @@ import math
 
 
 num_assets = 1
-x_init = np.ones(num_assets) * 100
-y_init = np.ones(num_assets) * -0.949
-z_init = np.ones(num_assets) * -0.949
+y_init = np.ones(num_assets) * -1
+z_init = np.ones(num_assets) * -1
 r = 0.05
 
-total_Time = 270/252 # change everytime
+total_Time = 0.2 # change everytime
 num_time_interval = 80
 delta_t = total_Time / num_time_interval
         
 # correlation parameters
-rho_1 = -0.5
-rho_2 = -0.5
-rho_12 = 0.2730 # CHANGE EVERYTIME
+rho_1 = -0.2
+rho_2 = -0.2
+rho_12 = 0 # CHANGE EVERYTIME
         
 # reversion rate parameters
 alpha_revert = 20
 delta = 0.1
         
-mf = -1.3
-ms = -1
+mf = -0.8
+ms = -0.8
     
-vov_f = 0.5
-vov_s = 0.8
+vov_f = 0.05
+vov_s = 0.05
         
-strikes = [90, 95, 100, 105, 110]
+strike = 100
 num_sample = 750000
 
-for i in range(len(strikes)):
-    strike = strikes[i]
+init_prices = [90, 95, 100, 105, 110]
+
+for j in range(len(init_prices)):
+    x_init = np.ones(num_assets) * init_prices[j]
     dw_sample = normal.rvs([0, 0, 0], [[delta_t, rho_1 * delta_t, rho_2 * delta_t], 
                                                 [rho_1 * delta_t, delta_t, rho_12 * delta_t],
                                                 [rho_2 * delta_t, rho_12 * delta_t, delta_t]], size=[num_sample, num_time_interval])
@@ -75,7 +76,7 @@ for i in range(len(strikes)):
     
     stdError = np.std(math.exp(-r * total_Time) * payoffs, ddof = 1) / math.sqrt(num_sample)
     
-    print("Strike: ", strike)
+    print("Stock Price: ", init_prices[j])
     print("MC Price: ", optionPrice)
     print("Std Error: ", stdError)
     print()
