@@ -2,6 +2,8 @@
 
 David Zhou Senior Thesis
 
+## Text below is forked from the Jiequn Han repo. Readme in works.
+
 ## Training
 
 ```
